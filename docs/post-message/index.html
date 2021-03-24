@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Ya-Ha-!</title>
+</head>
+<body>
+  <script>
+    window.parent.postMessage(JSON.stringify({
+      txt: 'Ya-Ha-!'
+    }), '*');
+    window.addEventListener('message', function(evt) {
+      document.getElementById('msg').innerText = evt.data;
+    });
+  </script>
+</body>
+</html>

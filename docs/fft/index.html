@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>FFT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      background: #e3e3e3;
+      overflow: hidden;
+    }
+
+    .ttl {
+      display: flex;
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      color: rgba(255, 255, 255, .9);
+      font: 50px AvenirNext-Heavy;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-shadow: 0 0 2px rgba(0, 0, 0, .1);
+      opacity: 1;
+      user-select: none;
+      pointer-events: none;
+      transition: opacity .2s ease-out;
+    }
+
+    .ttl.none {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <h1 class="ttl">Please Touch The Screen.</h1>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const request = new XMLHttpRequest;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    request.onload = function() {
+      audioCtx.decodeAudioData(this.response, function(evt) {
+        const source = audioCtx.createBufferSource();
+        const analyser = audioCtx.createAnalyser(evt);
+
+        const LENGTH = 32;
+        const data = new Uint8Array(LENGTH);
+
+        analyser.fftSize = 1024;
+
+        source.buffer = evt;
+        source.connect(audioCtx.destination);
+        source.connect(analyser);
+
+        source.loop = true;
+
+        document.getElementById('canvas').addEventListener('click', function handleClick() {
+          source.start();
+          document.querySelector('.ttl').classList.add('none');
+          this.removeEventListener('click', handleClick, false);
+        }, false);
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        tick();
+
+        function tick() {
+          canvas.width = canvas.width;
+          canvas.height = canvas.height;
+
+          ctx.fillStyle = '#3e3e3e';
+
+          const w = canvas.width / LENGTH;
+
+          analyser.getByteFrequencyData(data);
+
+          for (let i = 0; i < LENGTH; ++i) {
+            ctx.rect(i * w, canvas.height - data[i], w, data[i]);
+          }
+
+          ctx.fill();
+
+          requestAnimationFrame(tick);
+        }
+      });
+    };
+
+    request.open('GET', 'bgm.mp3', true);
+    request.responseType = 'arraybuffer';
+
+    request.send();
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>window click</title>
+  <style>
+    body {
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+    }
+  </style>
+</head>
+<body>
+  <div></div>
+  <script>
+    window.addEventListener('click', () => {
+      alert('window');
+    });
+
+    document.addEventListener('click', () => {
+      alert('document');
+    });
+
+    document.body.addEventListener('click', () => {
+      alert('body');
+    });
+  </script>
+</body>
+</html>

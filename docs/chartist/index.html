@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.4/chartist.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/0.11.0/chartist.min.css">
+    <title>chartist.js</title>
+    <style>
+      * {
+        margin: 0; padding: 0;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #FAFAFA;
+        background: #757575;
+      }
+
+      ol {
+        position: absolute;
+        margin: 0 -160px 160px;
+        bottom: 50%; right: 50%;
+        font-size: 10px;
+        list-style: none;
+      }
+
+      li:before {
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 4px;
+        width: 10px; height: 10px;
+        content: '';
+        background: #212121;
+      }
+
+      .ct-label {
+        font-size: 16px;
+        fill: #FAFAFA;
+      }
+
+      li:nth-child(1):before,
+      .ct-series-a .ct-slice-pie {
+        fill: #E53935;
+        background: #E53935;
+      }
+
+      li:nth-child(2):before,
+      .ct-series-b .ct-slice-pie {
+        fill: #8E24AA;
+        background: #8E24AA;
+      }
+
+      li:nth-child(3):before,
+      .ct-series-c .ct-slice-pie {
+        fill: #5E35B1;
+        background: #5E35B1;
+      }
+
+      li:nth-child(4):before,
+      .ct-series-d .ct-slice-pie {
+        fill: #3949AB;
+        background: #3949AB9;
+      }
+
+      li:nth-child(5):before,
+      .ct-series-e .ct-slice-pie {
+        fill: #1E88E5;
+        background: #1E88E5;
+      }
+
+      li:nth-child(6):before,
+      .ct-series-f .ct-slice-pie {
+        fill: #0288D1;
+        background: #0288D1;
+      }
+
+      li:nth-child(7):before,
+      .ct-series-g .ct-slice-pie {
+        fill: #0097A7;
+        background: #0097A7;
+      }
+
+      li:nth-child(8):before,
+      .ct-series-h .ct-slice-pie {
+        fill: #00897B;
+        background: #00897B;
+      }
+
+      li:nth-child(9):before,
+      .ct-series-i .ct-slice-pie {
+        fill: #43A047;
+        background: #43A047;
+      }
+
+      li:nth-child(10):before,
+      .ct-series-j .ct-slice-pie {
+        fill: #558B2F;
+        background: #558B2F;
+      }
+
+      li:nth-child(11):before,
+      .ct-series-k .ct-slice-pie {
+        fill: #E65100;
+        background: #E65100;
+      }
+
+      li:nth-child(12):before,
+      .ct-series-l .ct-slice-pie {
+        fill: #F4511E;
+        background: #F4511E;
+      }
+
+      #title {
+        position: absolute;
+        top: 50%;
+        left: 0; right: 0;
+        margin-top: -240px;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      #chart {
+        width: 300px; height: 300px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="title"></h1>
+    <ol></ol>
+    <div id="chart"></div>
+    <script>
+      var hash = convertQueryToObject(location.hash.replace('#', ''));
+      var param = convertQueryToObject(location.search.replace(/\?/, ''));
+      var keys = Object.keys(param);
+
+      var data = {
+        labels: [],
+        series: []
+      };
+
+      keys.forEach(function(key) {
+
+        if (key !== 'fbclid') {
+          data.labels.push(`${key}: ${param[key]}%`);
+          data.series.push(param[key]);
+
+          $('ol').append(`<li>${key}: ${param[key]}%</li>`);
+        }
+      });
+
+      var options = {
+        chartPadding: 0,
+        showLabel: true,
+        labelOffset: -20,
+        labelDirection: 'explode',
+        labelInterpolationFnc: function(value) {
+          return value;
+        }
+      };
+
+      if (hash.title) {
+        $('#title').text('Q. ' + hash.title);
+      }
+
+      new Chartist.Pie('#chart', data, options);
+
+      function convertQueryToObject(query) {
+        var obj    = {},
+            params = query.split(/[?&]/),
+            p, key, val;
+
+        for (var i = 0, len = params.length; i < len; ++i) {
+          p   = params[i].split("=");
+          key = normalize(p[0]);
+          val = normalize(p[1]);
+
+          if (key) {
+            obj[key] = val;
+          }
+        }
+
+        return obj;
+      }
+
+    function fixedEncodeURIComponent(str) {
+      return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
+    }
+
+    function fixedDecodeURIComponent(str) {
+      return decodeURIComponent(str.replace(/[!'()*]/g, unescape));
+    }
+
+    function normalize(arg) {
+      return (!arg) ? null : fixedDecodeURIComponent(arg);
+    }
+    </script>
+  </body>
+</html>

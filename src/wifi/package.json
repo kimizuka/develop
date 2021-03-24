@@ -1,0 +1,9 @@
+{
+  "name": "wifi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "node-wifi": "^2.0.13"
+  }
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>data-attribute</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="data属性検証" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="canonical" href="https://develop.kimizuka.org/data-attribute/" />
+  <style>
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      height: 100vh;
+      background: #fafafa;
+    }
+
+    p {
+      font-size: 10px;
+      text-align: center;
+    }
+
+    [data-color] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px;
+      width: 160px; height: 160px;
+      color: #fafafa;
+    }
+
+    [data-color]:before {
+      content: attr(data-color);
+    }
+
+    [data-color='red'] {
+      background: #E53935;
+    }
+
+    [data-color='blue'] {
+      background: #1E88E5;
+    }
+
+    [data-color='green'] {
+      background: #43A047;
+    }
+
+    [data-color='yellow'] {
+      color: #212121;
+      background: #FDD835;
+    }
+
+  </style>
+</head>
+<body>
+  <div>
+    <div id="dataset" data-color="red"></div>
+    <p>Vanilla - dataset</p>
+  </div>
+  <div>
+    <div id="set-attribute" data-color="red"></div>
+    <p>Vanilla - setAttribute</p>
+  </div>
+  <div>
+    <div id="react"></div>
+    <p>React</p>
+  </div>
+  <div>
+    <div id="vue" :data-color="color"></div>
+    <p>Vue</p>
+  </div>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const colors = ['red', 'blue', 'green', 'yellow'];
+    let colorIndex = 0;
+
+    ReactDOM.render(
+      React.createElement('div', {
+        'data-color': 'red'
+      }),
+      document.getElementById('react')
+    );
+
+    const vue = new Vue({
+      el: '#vue',
+      data: {
+        color: colors[colorIndex]
+      }
+    });
+
+    setInterval(function () {
+      colorIndex = (colorIndex + 1) % colors.length;
+      document.getElementById('dataset').dataset.color = colors[colorIndex];
+      document.getElementById('set-attribute').setAttribute('data-color', colors[colorIndex]);
+      ReactDOM.render(
+        React.createElement('div', {
+          'data-color': colors[colorIndex]
+        }),
+        document.getElementById('react')
+      );
+      vue.color = colors[colorIndex];
+    }, 1000);
+  </script>
+
+</body>
+</html>

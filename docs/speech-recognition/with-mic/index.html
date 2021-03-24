@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>speech-recognition-with-mic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      margin: 0; padding: 0;
+      color: #f8f8f8;
+      font-size: 20px;
+      background: #282828;
+    }
+
+    body:before {
+      display: block;
+      position: absolute;
+      top: 50%; left: 50%;
+      color: #1e1e1e;
+      font: 40px AvenirNext-Heavy;
+      content: "Please Speak!";
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    canvas {
+      display: block;
+      position: relative;
+    }
+
+    #msg {
+      position: absolute;
+      top: 10px; bottom: 10px;
+      left: 10px; right: 10px;
+      font-size: 14px;
+      white-space: pre-wrap;
+      overflow: scroll;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #msg:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="msg" contenteditable="true"></div>
+  <script>
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false
+    }).then(function(stream) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser(stream);
+      const LENGTH = 32;
+      const data = new Uint8Array(LENGTH);
+      const recognition = new webkitSpeechRecognition();
+      const msg = document.getElementById('msg');
+
+      recognition.lang = 'ja';
+
+      recognition.addEventListener('result', (evt) => {
+        const txt = evt.results[0][0].transcript;
+
+        if (txt) {
+          msg.innerText += `${txt}\n`;
+        }
+      }, false);
+
+      recognition.addEventListener('end', () => {
+        recognition.start();
+      });
+
+      recognition.start();
+
+      analyser.fftSize = 1024;
+
+      source.connect(analyser);
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      tick();
+
+      function tick() {
+        canvas.width = canvas.width;
+        canvas.height = canvas.height;
+
+        ctx.fillStyle = '#3e3e3e';
+
+        const w = canvas.width / LENGTH;
+
+        analyser.getByteFrequencyData(data);
+
+        for (let i = 0; i < LENGTH; ++i) {
+          ctx.rect(i * w, canvas.height - data[i], w, data[i]);
+        }
+
+        ctx.fill();
+
+        requestAnimationFrame(tick);
+      }
+    }).catch(function(err) {
+      console.error(err);
+    });
+  </script>
+</body>
+</html>

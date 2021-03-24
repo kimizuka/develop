@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>alexa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+  <script>
+    AFRAME.registerComponent('mask', {
+      init: function () {
+        const material = this.el.getObject3D('mesh').material;
+
+        material.colorWrite = false;
+      }
+    });
+
+    AFRAME.registerComponent('marker', {
+      init: function () {
+        const marker = this.el;
+
+        marker.addEventListener('markerFound', function () {
+          console.log('!');
+        });
+
+        marker.addEventListener('markerLost', function () {
+          console.log('?');
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+  <a-scene
+    embedded
+    arjs="debugUIEnabled: false"
+    device-orientation-permission-ui="enabled: false"
+    vr-mode-ui="enabled: false"
+  >
+    <a-assets>
+      <a-asset-item id="kimizuka" src="kimizuka.glb"></a-asset-item>
+    </a-assets>
+    <a-marker type='pattern' url='./pattern.patt'>
+<!--       <a-plane
+        width="1.4"
+        height="1.4"
+        position="0 0 0"
+        rotation="-90 0 0"
+        color="#000"
+      ></a-plane> -->
+      <a-plane
+        mask
+        width="10"
+        height="10"
+        position="0 0 0"
+        rotation="-90 0 0"
+      ></a-plane>
+      <a-entity
+        gltf-model="#kimizuka"
+        scale=".2 .2 .2"
+        position="0 -3.8 .75"
+        rotation="-85 0 0"
+        animation-mixer
+      ></a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>

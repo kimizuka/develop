@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>svg-canvas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    const fontSize = 80;
+
+    let text = 'こんにちは';
+
+    img.onload = () => {
+      canvas.width = 1000;
+      canvas.height = 600;
+
+      ctx.save();
+        ctx.fillStyle = 'red';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      ctx.restore();
+      ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = `${ fontSize }px sans-serif`;
+        ctx.fillText(
+          text,
+          canvas.width / 2,
+          (canvas.height - fontSize) / 2
+        );
+      ctx.restore();
+    };
+
+    img.src = '2.svg';
+  </script>
+</body>
+</html>

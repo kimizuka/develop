@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>cube</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      background: #000;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r118/three.min.js"></script>
+  <script src="./webvr-polyfill.js"></script>
+  <script src="./webvr.js"></script>
+  <script>
+    const boxes = location.search.replace('?', ' ').split(',').map((i) => {
+      return Number(i);
+    });
+
+    const length = Math.pow(Math.ceil(Math.cbrt(boxes.length)), 3);
+    const diff = length - boxes.length;
+
+    for (let i = 0; i < diff; ++i) {
+      boxes.push(0);
+    }
+
+    const size = 1;
+    const scene = new THREE.Scene();
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100);
+    const light = new THREE.DirectionalLight(0xFFFFFF);
+    const geometry = new THREE.BoxGeometry(size, size, size);
+    const material = new THREE.MeshLambertMaterial({
+      color: 0xFFFFFF
+    });
+    const interval = 100;
+    const group = new THREE.Group();
+
+    camera.position.set(size / 2, 0, Math.cbrt(boxes.length) * 8);
+    light.position.set(0, 100, 100);
+    scene.add(light);
+
+    for (let i = 0; i < boxes.length; ++i) {
+      ((i) => {
+        if (!boxes[i]) {
+          return;
+        }
+
+        const cube = new THREE.Mesh(geometry, material);
+        const pos = getPosition(i);
+        
+        cube.position.set(
+          pos.x * size,
+          pos.y * size,
+          pos.z * size
+        );
+
+        setTimeout(() => {
+          group.add(cube);
+        }, i * interval);
+      })(i);
+    }
+
+    scene.add(group);
+    renderer.vr.enabled = true;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setAnimationLoop(tick);
+
+    document.body.appendChild(WEBVR.createButton(renderer));
+    document.body.appendChild(renderer.domElement);
+
+    function getPosition(i) {
+      const length = boxes.length;
+
+      const x = i % Math.cbrt(length);
+      const y = 0 | i / Math.pow(Math.cbrt(length), 2);
+      const z = 0 | i / Math.cbrt(length) % Math.cbrt(length);
+      
+      return { x, y, z };
+    }
+
+    function tick() {
+      group.rotation.x += .01;
+      group.rotation.y += .01;
+      group.rotation.z += .01;
+      renderer.render(scene, camera);
+    }
+  </script>
+</body>
+</html>

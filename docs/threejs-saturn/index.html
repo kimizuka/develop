@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>vr</title>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      background: #ECECEC;
+      overflow: hidden;
+    }
+
+    canvas {
+      cursor: pointer;
+      width: 100% !important; height: 100% !important;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from './build/three.module.js';
+    import { OrbitControls } from './lib/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from './lib/jsm/loaders/GLTFLoader.js';
+    import { BoxLineGeometry } from './lib/jsm/geometries/BoxLineGeometry.js';
+    import { VRButton } from './lib/jsm/webxr/VRButton.js';
+
+    init();
+
+    function init() {
+      const canvas = document.createElement('canvas');
+
+      document.body.appendChild(canvas);
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true
+      });
+      const scene = new THREE.Scene();
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      renderer.setPixelRatio(1);
+      renderer.setSize(width, height);
+      renderer.vr.enabled = true;
+      renderer.outputEncoding = THREE.GammaEncoding;
+
+      const camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
+
+      camera.position.set(0, 0, 6);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+
+      const light = new THREE.DirectionalLight(0xFFFFFF);
+
+      light.position.set(1, 1, 1);
+      scene.add(light);
+
+      const loader = new GLTFLoader();
+      const url = './3d.glb';
+      const clock = new THREE.Clock();
+
+      let model;
+      let mixer;
+
+      loader.load(
+        url,
+        (gltf) => {
+          model = gltf.scene;
+          const animations = gltf.animations;
+
+          if (animations && animations.length) {
+            mixer = new THREE.AnimationMixer(model);
+
+            for (let i = 0; i < animations.length; i++) {
+              const animation = animations[i];
+              const action = mixer.clipAction(animation);
+
+              action.play();
+            }
+          }
+
+          model.scale.set(1.8, 1.8, 1.8);
+          model.position.set(0, -2, 0);
+          scene.add(gltf.scene);
+
+          renderer.setAnimationLoop(tick);
+          // document.body.appendChild(VRButton.createButton(renderer));
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
+
+      // const room = new THREE.LineSegments(
+      //   new BoxLineGeometry(8, 8, 8, 10, 10, 10).translate(0, 2, 0),
+      //   new THREE.LineBasicMaterial({
+      //     color: 0xFFFFFF
+      //   })
+      // );
+
+      // scene.add(room);
+
+      const param = {
+        quality: 1,
+        imageRendering: 'pixelated'
+      };
+
+      handleResize();
+      window.addEventListener('resize', handleResize);
+
+
+      const gui = new dat.GUI();
+
+      gui.add(param, 'quality', [1, 2, 4, 8, 16, 32, 64, 128]);
+      gui.add(param, 'imageRendering', [
+        'auto',
+        // 'smooth',
+        // 'high-quality',
+        // 'crisp-edges',
+        'pixelated'
+      ]);
+
+      function tick() {
+        controls.update();
+
+        if (model) {
+          // model.rotation.y += .01;
+        }
+
+        if (mixer){
+          mixer.update(clock.getDelta());
+        }
+
+        handleResize();
+        canvas.style.imageRendering = param.imageRendering;
+        renderer.render(scene, camera);
+      }
+
+      function handleResize() {
+        const zoom = Number(param.quality);
+        const width = window.innerWidth / zoom;
+        const height = window.innerHeight / zoom;
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(width, height);
+
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+    }
+  </script>
+</body>
+</html>

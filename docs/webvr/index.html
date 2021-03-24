@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>three.js demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      background: black;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from './build/three.module.js';
+    import { OrbitControls } from './lib/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from './lib/jsm/loaders/GLTFLoader.js';
+    import { BoxLineGeometry } from './lib/jsm/geometries/BoxLineGeometry.js';
+    import { VRButton } from './lib/jsm/webxr/VRButton.js';
+
+    const canvas = document.createElement('canvas');
+
+    document.body.appendChild(canvas);
+
+    const scene = new THREE.Scene();
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true
+    });
+
+    renderer.setSize(width, height);
+    renderer.vr.enabled = true; // 追加
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
+
+    camera.position.set(0, 1, 10);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    const light = new THREE.DirectionalLight(0xFFFFFF);
+
+    light.position.set(1, 1, 1);
+    scene.add(light);
+
+    const room = new THREE.LineSegments(
+      new BoxLineGeometry(8, 8, 8, 10, 10, 10).translate(0, 2, 0),
+      new THREE.LineBasicMaterial({
+        color: 0xFFFFFF
+      })
+    );
+
+    scene.add(room);
+
+    document.body.appendChild(VRButton.createButton(renderer));
+
+    renderer.setAnimationLoop(() => {
+      controls.update();
+      renderer.render(scene, camera);
+    });
+</script>
+</body>
+</html>

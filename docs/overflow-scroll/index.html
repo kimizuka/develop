@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>overflow-scroll</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="overflow: scroll 検証" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=no" />
+  <style>
+    div {
+      position: fixed;
+      left: 0; right: 0;
+      overflow: scroll;
+    }
+
+    span {
+      display: flex;
+      align-items: center;
+      width: 1000%; height: 100%;
+      color: #FAFAFA;
+    }
+
+    div:first-child {
+      top: 0; bottom: 50%;
+    }
+
+    div:first-child span {
+      background: #AD1457;
+    }
+
+    div:last-child {
+      top: 50%; bottom: 0;
+    }
+
+    div:last-child span {
+      background: #6A1B9A;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <span>overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll; overflow: scroll;</span>
+  </div>
+  <div>
+    <span>overflow: scroll; -webkit-overflow-scrolling: touch; overflow: scroll; -webkit-overflow-scrolling: touch; overflow: scroll; -webkit-overflow-scrolling: touch;  overflow: scroll; -webkit-overflow-scrolling: touch; overflow: scroll; -webkit-overflow-scrolling: touch; overflow: scroll; -webkit-overflow-scrolling: touch;  overflow: scroll; -webkit-overflow-scrolling: touch; overflow: scroll; -webkit-overflow-scrolling: touch;</span>
+  </div>
+</body>
+</html>

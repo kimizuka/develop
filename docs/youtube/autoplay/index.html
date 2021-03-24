@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>Auto Play - YouTube</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      display: flex;
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const tag = document.createElement('script');
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    const playerTag = document.createElement('div');
+
+    tag.src = 'https://www.youtube.com/iframe_api';
+
+    firstScriptTag.parentNode.insertBefore(playerTag, firstScriptTag);
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+    function onYouTubeIframeAPIReady() {
+      const player = new YT.Player(playerTag, {
+        width: '320',
+        height: '180',
+        videoId: '1g0ebPju_eE',
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        },
+        playerVars: {
+          playsinline: 1,
+        }
+      });
+    }
+
+    function onPlayerReady(evt) {
+      evt.target.mute();
+      evt.target.playVideo();
+    }
+
+    function onPlayerStateChange(evt) {
+      switch (evt.data) {
+        case YT.PlayerState.ENDED:
+          evt.target.playVideo();
+          break;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>arupin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .red {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      background: rgba(255, 0, 0, .4);
+      opacity: 0;
+    }
+
+    .red.show {
+      animation: blink .4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let red;
+    let audio;
+
+    AFRAME.registerComponent('marker', {
+      init: function () {
+        const marker = this.el;
+
+        marker.addEventListener('markerFound', function () {
+          red && red.classList.remove('show');
+          audio && audio.pause();
+        });
+
+        marker.addEventListener('markerLost', function () {
+          red && red.classList.add('show');
+
+          if (audio) {
+            audio.currentTime = 0;
+            audio.play();
+          }
+        });
+      }
+    });
+
+    window.onload = () => {
+      red = document.querySelector('.red');
+      audio = document.getElementById('audio');
+    };
+  </script>
+  <a-scene
+    embedded
+    arjs="debugUIEnabled: false"
+    device-orientation-permission-ui="enabled: false"
+    vr-mode-ui="enabled: false"
+  >
+    <a-assets>
+      <audio id="audio" src="buzzer.mp3"></audio>
+    </a-assets>
+    <a-marker marker type='pattern' url='./pattern.patt'>
+      <a-plane
+        color="#000"
+        width="10" height="10"
+        position="0 0 0"
+        rotation="-90 0 0"
+        material="opacity: .0"
+      ></a-plane>
+      <a-cylinder
+        color="#f00"
+        position="0 2 0"
+        height="10"
+        radius=".02"
+        rotation="90 0 -30"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="1 1 1"
+        height="10"
+        radius=".02"
+        rotation="-5 0 30"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="0 0 0"
+        height="20"
+        radius=".02"
+        rotation="-45 0 0"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="0 0 -3"
+        height="10"
+        radius=".02"
+        rotation="80 0 90"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="0 1 -2"
+        height="10"
+        radius=".02"
+        rotation="-80 0 90"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="-1 0 -1"
+        height="10"
+        radius=".02"
+        rotation="-5 0 -30"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="1 0 2"
+        height="20"
+        radius=".02"
+        rotation="-25 0 0"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="2 0 0"
+        height="20"
+        radius=".02"
+        rotation="20 0 -125"
+        material="opacity: .4"
+      ></a-cylinder>
+      <a-cylinder
+        color="#f00"
+        position="-1 0 1.5"
+        height="20"
+        radius=".02"
+        rotation="-5 0 -5"
+        material="opacity: .4"
+      ></a-cylinder>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+  <div class="red"></div>
+</body>
+</html>

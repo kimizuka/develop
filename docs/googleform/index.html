@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>GoogleForm検証</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="develop.kimizuka.org" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+<body>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeobFVEOjrKx9y6iuEW1-tYbF9jUCxIGL49voft3B89ojgqEw/viewform?embedded=true" width="400" height="620" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+  <script>
+    var config = {
+      apiKey: "apiKey",
+      authDomain: "projectId.firebaseapp.com",
+      databaseURL: "https://databaseName.firebaseio.com",
+      storageBucket: "bucket.appspot.com"
+    };
+
+    firebase.initializeApp(config);
+    var database = firebase.database();
+
+    console.log(database);
+  </script>
+</body>
+</html>

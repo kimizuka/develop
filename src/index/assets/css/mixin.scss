@@ -1,0 +1,17 @@
+@mixin wide {
+  @media (min-width: $wideWidth) {
+    @content;
+  }
+}
+
+@mixin pc {
+  @media (min-width: $pcWidth) {
+    @content;
+  }
+}
+
+@mixin sp {
+  @media (max-width: ($pcWidth - 1)) {
+    @content;
+  }
+}

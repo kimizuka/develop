@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>seek</title>
+  <meta name="viewport" content="width=device-width" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <script src="https://kimizuka.github.io/aframe-extras/dist/aframe-extras.min.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    canvas {
+      cursor: pointer;
+      pointer-events: none;
+    }
+
+    #ui {
+      position: fixed;
+      bottom: 80px;
+      left: 20px; right: 20px;
+    }
+
+    input {
+      display: block;
+      margin: auto;
+      max-width: 400px;
+      width: 100%;
+      cursor: pointer;
+      transform: scale(2.5);
+    }
+  </style>
+  <script>
+    let range;
+    let vue;
+
+    AFRAME.registerComponent('entity', {
+      init: function() {
+        const el = this.el;
+
+        vue = new Vue({
+          el: '#range',
+          data() {
+            return {
+              val: '0',
+              sec: 0
+            };
+          },
+          watch: {
+            val: function() {
+              const activeActions = el.getActiveActions();
+
+              if (activeActions[0]) {
+                activeActions[0].time = Number(this.val);
+              }
+
+              this.sec = Number(this.val);
+            }
+          },
+          methods: {
+            handleInput() {
+              const activeActions = el.getActiveActions();
+
+              activeActions[0].paused = true;
+            },
+            handleChange() {
+              const activeActions = el.getActiveActions();
+
+              activeActions[0].paused = false;
+            }
+          }
+        });
+      },
+      tick: function() {
+        const activeActions = this.el.getActiveActions();
+
+        if (activeActions[0]) {
+          vue.val = String(activeActions[0].time);
+        }
+      }
+    });
+
+    window.onload = () => {
+      document.querySelector('a-scene').renderer.gammaOutput = true;
+    };
+  </script>
+</head>
+<body>
+  <a-scene
+    embedded
+    arjs="debugUIEnabled: false"
+    device-orientation-permission-ui="enabled: false"
+    vr-mode-ui="enabled: false"
+  >
+    <a-assets>
+      <a-asset-item
+        id="model"
+        src="model.glb"
+      ></a-asset-item>
+    </a-assets>
+    <a-marker type='pattern' url='./pattern.patt'>
+      <a-entity
+        entity
+        gltf-model="#model"
+        position="0 0 -3"
+        scale="1.7 1.7 1.7"
+        animation-mixer="loop: repeat"
+      ></a-entity>
+    </a-marker>
+  </a-scene>
+  <div id="ui">
+    <input
+      v-model="val"
+      @input="handleInput"
+      @change="handleChange"
+      id="range"
+      type="range"
+      min="0"
+      max="2.4"
+      step=".1"
+    />
+  </div>
+</body>
+</html>
