@@ -16,6 +16,11 @@
       position: absolute;
       top: 8px; left: 8px;
     }
+
+    dl {
+      font-weight: bold;
+      -webkit-text-stroke: .4px black;
+    }
   </style>
 </head>
 <body>
@@ -42,6 +47,7 @@
     var screenWidth = window.screen && window.screen.width;
     var screenHeight = window.screen && window.screen.height;
     var screenHeight = window.screen && window.screen.height;
+    var promise = !!window.Promise;
     var navigatorGetUserMedia = !!navigator.getUserMedia || !!navigator.webkitGetUserMedia || !!navigator.mozGetUserMedia;
     var mediaDevicesGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
@@ -50,13 +56,15 @@
       '<dd>' + innerWidth + '</dd>',
       '<dt>innerHeight</dt>',
       '<dd>' + innerHeight + '</dd>',
-      '<dt>screenWidth</dt>',
+      '<dt>screen.width</dt>',
       '<dd>' + screenWidth + '</dd>',
-      '<dt>screenHeight</dt>',
+      '<dt>screen.height</dt>',
       '<dd>' + screenHeight + '</dd>',
-      '<dt>navigatorGetUserMedia</dt>',
+      '<dt>Promise</dt>',
+      '<dd>' + promise + '</dd>',
+      '<dt>navigator.getUserMedia</dt>',
       '<dd>' + navigatorGetUserMedia + '</dd>',
-      '<dt>mediaDevicesGetUserMedia</dt>',
+      '<dt>mediadevices.getUserMedia</dt>',
       '<dd>' + mediaDevicesGetUserMedia + '</dd>'
     ].join('');
 
