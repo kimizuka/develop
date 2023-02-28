@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>AR DEMO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+
+    #txt {
+      position: fixed;
+      top: -9999px;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const fontSize = 80;
+    let text = '';
+    let width = 0;
+    let height = 0;
+    let img, fuji, taka, nasubi;
+    let serif = 'normal';
+    let timer;
+
+    AFRAME.registerComponent('plane', {
+      init: function() {
+        this.canvas = document.getElementById('canvas');
+        this.ctx = canvas.getContext('2d');
+      },
+
+      tick: function(delta) {
+        const material = this.el.getObject3D('mesh').material;
+
+        if (!img) {
+          return;
+        }
+
+        const index = (0 | delta / 2000) % 3;
+
+        this.canvas.width = 1000;
+        this.canvas.height = 600;
+
+        this.ctx.save();
+          this.ctx.drawImage(img, 0, 0);
+        this.ctx.restore();
+        this.ctx.save();
+          this.ctx.imageSmoothingEnabled = true;
+          this.ctx.drawImage([fuji, taka, nasubi][index], 80, 80, 300, 300);
+        this.ctx.restore();
+
+        if (!material.map) {
+          return;
+        }
+
+        material.map.needsUpdate = true;
+      }
+    });
+
+    AFRAME.registerComponent('marker', {
+      init: function() {
+        const marker = this.el;
+
+        marker.addEventListener('markerFound', function() {
+          console.log('Found!');
+        });
+      }
+    });
+
+    document.body.onload = () => {
+      img = document.getElementById(serif);
+      fuji = document.getElementById('fuji');
+      taka = document.getElementById('taka');
+      nasubi = document.getElementById('nasubi');
+    };
+  </script>
+  <a-scene embedded arjs="debugUIEnabled: false" vr-mode-ui="enabled: false">
+    <a-assets>
+      <canvas id="canvas"></canvas>
+      <img id="normal" src="1.svg" />
+      <img id="fuji" src="1.png" />
+      <img id="taka" src="2.png" />
+      <img id="nasubi" src="3.png" />
+    </a-assets>
+    <a-marker marker type='pattern' url='./pattern.patt'>
+      <a-plane
+        plane
+        width="10"
+        height="6"
+        rotation="-80 0 0"
+        position="0 0 -4"
+        material="shader: flat; src: #canvas;"
+      ></a-plane>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>

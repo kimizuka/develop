@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>window.open</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+</head>
+<body>
+  <button id="open">window.open</button>
+  <a href="close.html" target="_blank">
+    <button>target="_blank"</button>
+  </a>
+  <a href="close.html" target="_blank" rel="noreferrer">
+    <button>target="_blank + rel="noreferrer""</button>
+  </a>
+  <a href="close.html">
+    <button>href</button>
+  </a>
+  <script>
+    document.getElementById('open').addEventListener('click', () => window.open('close.html'));
+  </script>
+</body>
+</html>

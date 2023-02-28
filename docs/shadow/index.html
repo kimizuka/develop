@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>shadow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+</head>
+<body>
+  <a-scene arjs="debugUIEnabled: false" vr-mode-ui="enabled: false">
+    <a-assets>
+      <a-asset-item id="shadow" src="shadow.glb"></a-asset-item>
+    </a-assets>
+    <a-cylinder
+      color="#fff"
+      radius="2"
+      height=".1"
+      position="0 1.6 -3"
+      rotation="90 0 0"
+    ></a-cylinder>
+    <a-entity
+      gltf-model="#shadow"
+      position="0 .7 -1.6"
+      scale="1 1 1"
+      animation-mixer
+    ></a-entity>
+    <a-sky color="#000"></a-sky>
+  </a-scene>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>File Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    body {
+      background: #fafafa;
+    }
+
+    .uploader {
+      position: absolute;
+      top: 50%; left: 50%;
+      margin: -90px -160px;
+      border-radius: 8px;
+      width: 320px; height: 180px;
+      background: #212121;
+      overflow: hidden;
+    }
+
+    .uploader:before {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 24px; bottom: 24px;
+      left: 24px; right: 24px;
+      border: dashed 2px #fafafa;
+      color: #fafafa;
+      font-size: 14px;
+      content: 'drag and drop your file here';
+      pointer-events: none;
+    }
+
+    .uploader input {
+      display: block;
+      position: absolute;
+      top: 0; left: 0;
+      width: 999px; height: 999px;
+      font-size: 999px;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="uploader">
+    <input type="file" name="file" />
+  </div>
+  <script>
+    document.querySelector('input').addEventListener('change', (evt) => {
+      console.log(evt.target.files[0]);
+    });
+  </script>
+</body>
+</html>

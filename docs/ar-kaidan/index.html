@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>kaidan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let audio;
+
+    AFRAME.registerComponent('marker', {
+      init: function () {
+        const marker = this.el;
+
+        marker.addEventListener('markerFound', function () {
+          audio && audio.pause();
+        });
+
+        marker.addEventListener('markerLost', function () {
+          if (audio) {
+            audio.currentTime = 0;
+            audio.play();
+          }
+        });
+      }
+    });
+
+    window.onload = () => {
+      audio = document.getElementById('audio');
+    };
+  </script>
+  <a-scene
+    embedded
+    arjs="debugUIEnabled: false"
+    device-orientation-permission-ui="enabled: false"
+    vr-mode-ui="enabled: false"
+  >
+    <a-assets>
+      <audio id="audio" src="audio.mp3"></audio>
+      <img id="img" src="img.png" />
+    </a-assets>
+    <a-marker marker type='pattern' url='./pattern.patt'>
+      <a-plane
+        rotation="-90 0 0"
+        src="#img"
+      ></a-plane>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>

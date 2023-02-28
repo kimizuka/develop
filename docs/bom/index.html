@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>BOM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: black;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas></canvas>
+  <script>
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const video = document.createElement('video');
+
+    video.muted = true;
+
+    video.setAttribute('autoplay', 'autoplay');
+    video.setAttribute('loop', 'loop');
+    video.setAttribute('playsinline', 'playsinline');
+
+    video.addEventListener('canplay', () => {
+      tick();
+      video.play();
+    });
+
+    video.src = 'explosion.mp4';
+
+    function tick() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      ctx.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
+      const imageData = ctx.getImageData(0, 0, window.innerWidth, window.innerHeight);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] < 200) {
+          data[i + 3] = 0;
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      requestAnimationFrame(tick);
+    }
+
+  </script>
+</body>
+</html>

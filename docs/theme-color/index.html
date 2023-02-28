@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>theme-color</title>
+  <meta name="viewport" content="width=device-width, shrink-to-fit=no" />
+  <meta id="theme-color" name="theme-color" content="#000">
+  <style>
+    #input {
+      display: block;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <input id="input" type="color" />
+  <script>
+    document.getElementById('input').addEventListener('input', (evt) => {
+      document.getElementById('theme-color').setAttribute('content', evt.target.value);
+    });
+  </script>
+</body>
+</html>

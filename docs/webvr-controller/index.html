@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>webvr controller</title>
+  <style>
+    #VRButton {
+      background: #000 !important;
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from './scripts/build/three.module.js';
+    import { VRButton } from './scripts/lib/jsm/webxr/VRButton.js';
+    import { XRControllerModelFactory } from './scripts/lib/jsm/webxr/XRControllerModelFactory.js';
+
+    const canvas = document.createElement('canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera();
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true
+    });
+
+    renderer.setClearColor(0xf8f8f8, 1);
+    renderer.vr.enabled = true;
+
+    const controllerModelFactory = new XRControllerModelFactory();
+    const controllerGrip = renderer.xr.getControllerGrip(0);
+    const controllerModel = controllerModelFactory.createControllerModel(controllerGrip);
+
+    controllerGrip.add(controllerModel);
+    controllerGrip.addEventListener('select', (evt) => console.log(evt));
+    controllerGrip.addEventListener('selectstart', (evt) => console.log(evt));
+    controllerGrip.addEventListener('selectend', (evt) => console.log(evt));
+    controllerGrip.addEventListener('squeeze', (evt) => console.log(evt));
+    controllerGrip.addEventListener('squeezestart', (evt) => console.log(evt));
+    controllerGrip.addEventListener('squeezeend', (evt) => console.log(evt));
+    controllerGrip.addEventListener('end', (evt) => console.log(evt));
+
+    scene.add(controllerGrip);
+
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+
+      if (debug && controllerModel.motionController) {
+        debug.log(JSON.stringify(controllerModel.motionController.data, null, '  '));
+      }
+    });
+
+    const debug = (() => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const fontSize = 24;
+      const padding = 12;
+
+      canvas.width = 600;
+      canvas.height = 1200;
+
+      const geometry = new THREE.PlaneGeometry(canvas.width / 100, canvas.height / 100);
+      const texture = new THREE.CanvasTexture(canvas);
+      const material = new THREE.MeshBasicMaterial({
+        map: texture
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.log = log;
+
+      function log(text) {
+        ctx.fillStyle = '#282828';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#f8f8f8';
+        ctx.font = `${fontSize}px sans-serif`;
+
+        text.split('\n').map((text, i) => {
+          ctx.fillText(text, padding, padding + fontSize * (i + 1));
+        })
+
+        material.map.needsUpdate = true;
+      }
+
+      return mesh;
+    })();
+
+    debug.position.set(0, 0, -12);
+    scene.add(debug);
+
+    document.body.appendChild(VRButton.createButton(renderer));
+  </script>
+</body>
+</html>

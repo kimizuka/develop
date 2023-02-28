@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>howler</title>
+    <meta name="viewport" content="width=device-width" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  </head>
+  <body>
+    <script>
+      const sound = new Howl({
+        src: ['sound.mp3'],
+        html5: true
+      });
+
+      setInterval(() => {
+        sound.play();
+      }, 2000);
+    </script>
+  </body>
+</html>

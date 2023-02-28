@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>devicemotion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="devicemotion検証" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="canonical" href="https://develop.kimizuka.org/devicemotion/ios.html" />
+  <style>
+    .box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+    }
+
+    [data-index='0'] .box:nth-child(2) {
+      display: none;
+    }
+
+    [data-index='1'] .box:nth-child(1) {
+      display: none;
+    }
+
+    #x:before {
+      content: 'x: ';
+    }
+
+    #y:before {
+      content: 'y: ';
+    }
+
+    #z:before {
+      content: 'z: ';
+    }
+  </style>
+</head>
+<body data-index="0">
+  <div class="box">
+    <button id="btn">START</button>
+  </div>
+  <div class="box">
+    <div>
+      <p id="x"></p>
+      <p id="y"></p>
+      <p id="z"></p>
+    </div>
+  </div>
+  <script>
+    document.getElementById('btn').addEventListener('click', () => {
+
+      if (window.DeviceMotionEvent && window.DeviceMotionEvent.requestPermission) {
+        DeviceMotionEvent.requestPermission()
+                         .then((state) => {
+                           if (state === 'granted') {
+                             document.querySelector('[data-index]').dataset.index = '1';
+                             setDevicemotionEvent();
+                           } else {
+                             alert('動作と方向へのアクセスを許可してください');
+                           }
+                         })
+                         .catch((err) => console.error(err));
+      } else {
+        document.querySelector('[data-index]').dataset.index = '1';
+        setDevicemotionEvent();
+      }
+    });
+
+    function setDevicemotionEvent() {
+      window.addEventListener('devicemotion', (evt) => {
+        document.getElementById('x').innerText = evt.accelerationIncludingGravity.x;
+        document.getElementById('y').innerText = evt.accelerationIncludingGravity.y;
+        document.getElementById('z').innerText = evt.accelerationIncludingGravity.z;
+      });
+    }
+  </script>
+</body>
+</html>

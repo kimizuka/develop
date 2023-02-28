@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Share API Multiple Files</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=no" />
+  <style>
+    span {
+      display: block;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px;
+      min-width: 88px; min-height: 44px;
+    }
+
+    [data-share='share']:before {
+      margin-right: 8px;
+      content: 'navigator.share →';
+    }
+
+    [data-share='canshare']:before {
+      margin-right: 8px;
+      content: 'navigator.canShare →';
+    }
+  </style>
+</head>
+<body>
+  <canvas></canvas>
+  <canvas></canvas>
+  <canvas></canvas>
+  <button>share</button>
+  <script>
+    [].slice.call(document.querySelectorAll('canvas')).forEach((canvas, i) => {
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '40px serif';
+      ctx.fillText(i, canvas.width / 2, canvas.height / 2)
+    });
+
+    document.querySelector('button').addEventListener('click', async () => {
+      const param = { files: [] };
+      const canvasList = document.querySelectorAll('canvas');
+
+      for (let i = 0; i < canvasList.length; ++i) {
+        param.files.push(canvasToPngFile(document.querySelectorAll('canvas')[i], i));
+      }
+
+      await navigator.share(param).done(() => {
+        console.log('share');
+      }).catch((err) => {
+        console.error(err);
+      });
+    });
+
+    function canvasToPngFile(canvas, name) {
+      const type = 'image/png';
+      const dataUrl = canvasToBase64(canvas, type);
+      const decodedData = window.atob(dataUrl.replace(/^.*,/, ''));
+      const buffers = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; ++i) {
+        buffers[i] = decodedData.charCodeAt(i);
+      }
+
+      try {
+        const blob = new Blob([buffers.buffer], {
+          type
+        });
+
+        return new File([ blob ], `${ name }.png`, { type });
+
+      } catch {
+        return null;
+      }
+    }
+
+    function canvasToBase64(canvas, type = 'image/png') {
+      return canvas.toDataURL(type);
+    }
+  </script>
+</body>
+</html>

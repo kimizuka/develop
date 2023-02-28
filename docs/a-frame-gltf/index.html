@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>gltf</title>
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script>
+    const cube = AFRAME.registerComponent('cube', {
+      play: function() {
+        if (this.el.dataset.color) {
+          const model = this.el.object3D.getObjectByName('Cube');
+
+          if (model) {
+            switch (this.el.dataset.color) {
+              case 'red':
+                model.material.color.r = 1;
+                model.material.color.g = 0;
+                model.material.color.b = 0;
+                break;
+              case 'green':
+                model.material.color.r = 0;
+                model.material.color.g = 1;
+                model.material.color.b = 0;
+                break;
+              case 'blue':
+                model.material.color.r = 0;
+                model.material.color.g = 0;
+                model.material.color.b = 1;
+                break;
+            }
+          }
+        }
+      }
+    });
+  </script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <a-scene vr-mode-ui="enabled: false">
+    <a-gltf-model src="cube.glb" position="0 0 0"></a-gltf-model>
+    <a-gltf-model cube data-color="red" src="cube.glb" position="3 0 0"></a-gltf-model>
+    <a-gltf-model cube data-color="green" src="cube.glb" position="0 0 3"></a-gltf-model>
+    <a-gltf-model cube data-color="blue" src="cube.glb" position="3 0 3"></a-gltf-model>
+    <a-entity camera position="8 8 8" rotation="-30 30 0"></a-entity>
+  </a-scene>
+</body>
+</html>

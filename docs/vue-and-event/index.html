@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>vue-and-event</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="Vue検証用" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="canonical" href="https://develop.kimizuka.org/viewport/" />
+</head>
+<body>
+  <button id="app">{{ name }}</button>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    document.getElementById('app').addEventListener('click', () => {
+      console.log('click!');
+    });
+
+    document.body.addEventListener('click', (evt) => {
+      if (evt.target.id === 'app') {
+        console.log('delegate!');
+      }
+    });
+
+    setTimeout(() => {
+      const vue = new Vue({
+        el: '#app',
+        data: {
+          name: 'vue'
+        }
+      });
+    }, 2000);
+  </script>
+</body>
+</html>

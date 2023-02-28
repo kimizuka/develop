@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>canvas-monochro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      margin: 0; padding: 0;
+      background: #000;
+    }
+
+    video {
+      width: 320px; height: 232px;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const video = document.createElement('video');
+
+    canvas.width = 320;
+    canvas.height = 232;
+
+    video.muted = true;
+    video.setAttribute('autoplay', 'autoplay');
+    video.setAttribute('loop', 'loop');
+    video.setAttribute('playsinline', 'playsinline');
+
+    video.src = '../movie.mp4';
+
+    video.addEventListener('canplay', () => {
+      render();
+      video.play();
+    });
+
+    document.body.appendChild(video);
+    document.body.appendChild(canvas);
+
+    function render() {
+      ctx.filter = 'grayscale(100%)';
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      requestAnimationFrame(render);
+    }
+  </script>
+</body>
+</html>

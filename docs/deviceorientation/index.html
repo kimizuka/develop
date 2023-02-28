@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>deviceorientation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="devicemotion検証" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="canonical" href="https://develop.kimizuka.org/deviceorientation/" />
+  <style>
+    #alpha:before {
+      content: 'alpha: ';
+    }
+
+    #beta:before {
+      content: 'beta: ';
+    }
+
+    #gamma:before {
+      content: 'gamma: ';
+    }
+  </style>
+</head>
+<body>
+  <p id="alpha"></p>
+  <p id="beta"></p>
+  <p id="gamma"></p>
+  <script>
+    window.addEventListener('deviceorientation', (evt) => {
+      console.log(evt);
+      document.getElementById('alpha').innerText = evt.alpha;
+      document.getElementById('beta').innerText = evt.beta;
+      document.getElementById('gamma').innerText = evt.gamma;
+    });
+  </script>
+</body>
+</html>

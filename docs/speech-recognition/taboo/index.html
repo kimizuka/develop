@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>taboo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap');
+
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      margin: 0; padding: 0;
+      color: #f8f8f8;
+      font: 36px 'Noto Serif JP';
+      line-height: 1.6em;
+      background: #282828;
+      cursor: none;
+    }
+
+    body:before {
+      display: block;
+      position: absolute;
+      top: 50%; left: 50%;
+      color: #1e1e1e;
+      font-size: 48px;
+      content: "「あつい」と言ってはいけない。";
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    canvas {
+      display: block;
+      position: relative;
+    }
+
+    #msg {
+      position: absolute;
+      top: 10px; bottom: 10px;
+      left: 10px; right: 10px;
+      white-space: pre-wrap;
+      overflow: scroll;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #msg:focus {
+      outline: none;
+    }
+
+    .hot {
+      display: inline-block;
+      margin: 0 4px;
+      color: #f92472;
+      font-weight: bold;
+      animation: hot 1.2s ease-in-out infinite;
+    }
+
+    .shake {
+      animation: shake .2s ease-in-out 8;
+    }
+
+    @keyframes hot {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      20% {
+        transform: translate(5px, 5px);
+      }
+
+      40% {
+        transform: translate(-5px, -5px);
+      }
+
+      60% {
+        transform: translate(-5px, 5px);
+      }
+
+      80% {
+        transform: translate(5px, -5px);
+      }
+
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="msg"></div>
+  <script>
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false
+    }).then(function(stream) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser(stream);
+      const LENGTH = 32;
+      const data = new Uint8Array(LENGTH);
+      const recognition = new webkitSpeechRecognition();
+      const msg = document.getElementById('msg');
+      let isShake = false;
+      let lastP;
+
+      recognition.lang = 'ja';
+
+      recognition.addEventListener('result', (evt) => {
+        const txt = evt.results[0][0].transcript;
+
+        document.body.classList.remove('shake');
+
+        isShake = /(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/.test(txt);
+
+        if (txt) {
+          const p = document.createElement('p');
+
+          document.body.classList.remove('shake');
+
+          if (lastP) {
+            const innerText = lastP.innerText;
+
+            if (/[あア亜阿][ーっッ]?$/.test(innerText) && /^つい|ツイ/.test(txt)) {
+              isShake = true;
+              lastP.innerHTML = innerText.replace(/(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/g, '<span class="hot">$1</span>')
+                                         .replace(/([あア亜阿][ーっッ]?)$/, '<span class="hot">$1</span>');
+
+              p.innerHTML = txt.replace(/^(つい|ツイ)/, '<span class="hot">$1</span>')
+                               .replace(/(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/g, '<span class="hot">$1</span>');
+            } else if (/(あつ|アツ|圧|厚|篤)[ー]?$/.test(innerText) && /^い|イ|胃|井|伊|意|医|威|位/.test(txt)) {
+              isShake = true;
+              lastP.innerHTML = innerText.replace(/(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/g, '<span class="hot">$1</span>')
+                                         .replace(/(あつ|アツ|圧|厚|篤)[ー]?$/, '<span class="hot">$1</span>');
+              p.innerHTML = txt.replace(/^(い|イ|胃|井|伊|意|医|威|位)/, '<span class="hot">$1</span>')
+                               .replace(/(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/g, '<span class="hot">$1</span>');
+            } else {
+              p.innerHTML = txt.replace(/(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/g, '<span class="hot">$1</span>');
+            }
+          } else {
+            p.innerHTML = txt.replace(/(あ\s?つ\s?い|ア\s?ツ\s?イ|暑\s?い|厚\s?い|熱\s?い)/g, '<span class="hot">$1</span>');
+          }
+
+          msg.appendChild(p);
+
+          if (isShake) {
+            document.body.classList.add('shake');
+          }
+
+          lastP = p;
+        }
+      }, false);
+
+      recognition.addEventListener('end', () => {
+        recognition.start();
+      });
+
+      recognition.start();
+
+      analyser.fftSize = 1024;
+
+      source.connect(analyser);
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      tick();
+
+      function tick() {
+        canvas.width = canvas.width;
+        canvas.height = canvas.height;
+
+        ctx.fillStyle = '#3e3e3e';
+
+        const w = canvas.width / LENGTH;
+
+        analyser.getByteFrequencyData(data);
+
+        for (let i = 0; i < LENGTH; ++i) {
+          ctx.rect(i * w, canvas.height - data[i], w, data[i]);
+        }
+
+        ctx.fill();
+
+        requestAnimationFrame(tick);
+      }
+    }).catch(function(err) {
+      console.error(err);
+    });
+  </script>
+</body>
+</html>

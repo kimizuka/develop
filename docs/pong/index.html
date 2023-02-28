@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>pong</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      color: #FAFAFA;
+      background: #212121;
+    }
+
+    #game {
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+    }
+
+    [data-score] {
+      position: absolute;
+      top: 24px;
+      font: 32px Orbitron;
+    }
+
+    [data-score='1'] {
+      left: 24px;
+    }
+
+    [data-score='2'] {
+      right: 24px;
+    }
+
+    [data-player] {
+      position: absolute;
+      top: 50%;
+      margin-top: -80px;
+      border: solid 4px #FAFAFA;
+      width: 24px;
+      height: 160px;
+    }
+
+    [data-player='1'] {
+      left: 80px;
+    }
+
+    [data-player='2'] {
+      right: 80px;
+    }
+
+    .ball {
+      position: absolute;
+      top: 50%; left: 50%;
+      border: solid 4px #FAFAFA;
+      border-radius: 50%;
+      margin: -20px;
+      width: 40px; height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <p data-score="1">{{ score1 }}</p>
+    <p data-score="2">{{ score2 }}</p>
+    <div data-player="1" :style="{ top: `${ player1.position }%` }"></div>
+    <div class="ball" :style="{ top:` ${ ball.y }%`, left: `${ ball.x }%` }"></div>
+    <div data-player="2" :style="{ top: `${ player2.position }%` }"></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    let timer = null;
+    const vue = new Vue({
+      el: '#game',
+      data: {
+        isStart: false,
+        player1: {
+          up: false,
+          down: false,
+          score: 0,
+          position: 50
+        },
+        player2: {
+          up: false,
+          down: false,
+          score: 0,
+          position: 50
+        },
+        ball: {
+          x: 50,
+          y: 50,
+          angle: 30 + Math.random() * 10 + 90 * Math.round(Math.random() * 4),
+          speed: 1
+        }
+      },
+      computed: {
+        ballX: function() {
+          return this.ball.x * window.innerWidth / 100;
+        },
+        ballY: function() {
+          return this.ball.y * window.innerHeight / 100;
+        },
+        player1Y: function() {
+          return this.player1.position * window.innerHeight / 100;
+        },
+        player2Y: function() {
+          return this.player2.position * window.innerHeight / 100;
+        },
+        score1: function() {
+          return String(this.player1.score).padStart(4, 0);
+        },
+        score2: function() {
+          return String(this.player2.score).padStart(4, 0);
+        },
+      },
+      methods: {
+        restart: function(index) {
+          if (index) {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              this[`player${index}`].score += 1;
+            }, 100);
+          }
+
+          this.isStart = true;
+          this.ball.x = 50;
+          this.ball.y = 50
+          this.ball.angle = 30 + Math.random() * 10 + 90 * Math.round(Math.random() * 4);
+          this.ball.speed = 1;
+        },
+        isHitPlayer: function() {
+          if (100 < this.ballX && this.ballX < 140) {
+            if (this.player1Y - 120 < this.ballY && this.ballY < this.player1Y + 120) {
+              return true;
+            }
+          } else if (100 < window.innerWidth - this.ballX && window.innerWidth - this.ballX < 140) {
+            if (this.player2Y - 120 < this.ballY && this.ballY < this.player2Y + 120) {
+              return true;
+            }
+          }
+
+          return false;
+        },
+        boundX: function() {
+          this.ball.angle = (180 - this.ball.angle) % 360;
+
+          if (!(Math.round(vue.ball.angle) % 90)) {
+            const solt = 10;
+
+            vue.ball.angle += -solt / 2 + Math.random() * solt;
+          }
+        },
+        boundY: function() {
+          this.ball.angle = -this.ball.angle;
+
+          if (!(Math.round(vue.ball.angle) % 90)) {
+            const solt = 10;
+
+            vue.ball.angle += -solt / 2 + Math.random() * solt;
+          }
+        }
+      }
+    });
+
+    draw();
+
+    function draw() {
+      if (vue.isStart) {
+        if (vue.player1.up) {
+          vue.player1.position = Math.max(vue.player1.position - 1, 0);
+        } else if (vue.player1.down) {
+          vue.player1.position = Math.min(vue.player1.position + 1, 100);
+        }
+
+        if (vue.player2.up) {
+          vue.player2.position = Math.max(vue.player2.position - 1, 0);
+        } else if (vue.player2.down) {
+          vue.player2.position = Math.min(vue.player2.position + 1, 100);
+        }
+
+        vue.ball.x += Math.cos(Math.PI / 180 * vue.ball.angle) * vue.ball.speed;
+        vue.ball.y += Math.sin(Math.PI / 180 * vue.ball.angle) * vue.ball.speed;
+
+        if (vue.ball.y <= 0 || 100 <= vue.ball.y) {
+          vue.boundY();
+        }
+
+        if (vue.ball.x <= -10) {
+          vue.ballX = vue.ballY = 50;
+          setTimeout(() => {
+            vue.restart(2);
+          }, 1000);
+        } else if (110 <= vue.ball.x) {
+          vue.ballX = vue.ballY = 50;
+          setTimeout(() => {
+            vue.restart(1);
+          }, 1000);
+        }
+
+        if (vue.isHitPlayer()) {
+          vue.boundX();
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    document.body.addEventListener('keydown', (evt) => {
+      switch (evt.key) {
+        case 'q':
+          vue.player1.up = true;
+          vue.player1.down = false;
+          break;
+        case 'a':
+          vue.player1.up = false;
+          vue.player1.down = true;
+          break;
+        case 'o':
+          vue.player2.up = true;
+          vue.player2.down = false;
+          break;
+        case 'l':
+          vue.player2.up = false;
+          vue.player2.down = true;
+          break;
+        case ' ':
+          vue.isStart = !vue.isStart;
+      }
+    });
+
+    document.body.addEventListener('keyup', (evt) => {
+      switch (evt.key) {
+        case 'q':
+          vue.player1.up = false;
+          vue.player1.down = false;
+          break;
+        case 'a':
+          vue.player1.up = false;
+          vue.player1.down = false;
+          break;
+        case 'o':
+          vue.player2.up = false;
+          vue.player2.down = false;
+          break;
+        case 'l':
+          vue.player2.up = false;
+          vue.player2.down = false;
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>check</title>
+  <meta name="viewport" content="width=device-width, viewport-fit=cover, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    body {
+      color: white;
+      background:  black;
+    }
+
+    div {
+      position: absolute;
+      top: 8px; left: 8px;
+    }
+
+    dl {
+      font-weight: bold;
+      -webkit-text-stroke: .4px black;
+    }
+
+    video {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <video id="video" muted playsinline></video>
+  </div>
+  <div>
+    <dl id="info"></dl>
+    <ul>
+      <li>
+        <button id="btnNavigatorGetUserMedia">navigatorGetUserMedia</button>
+      </li>
+      <li>
+        <button id="btnMediaDevicesGetUserMedia">mediaDevicesGetUserMedia</button>
+      </li>
+      <li>
+        <input type="file" accept="image/*" capture="user" />
+      </li>
+    </ul>
+  </div>
+  <script>
+    var userAgent = navigator.userAgent;
+    var innerWidth = window.innerWidth;
+    var innerHeight = window.innerHeight;
+    var screenWidth = window.screen && window.screen.width;
+    var screenHeight = window.screen && window.screen.height;
+    var screenHeight = window.screen && window.screen.height;
+    var promise = !!window.Promise;
+    var navigatorGetUserMedia = !!navigator.getUserMedia || !!navigator.webkitGetUserMedia || !!navigator.mozGetUserMedia;
+    var mediaDevicesGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+    document.getElementById('info').innerHTML = [
+      '<dt>userAgent</dt>',
+      '<dd>' + userAgent + '</dd>',
+      '<dt>innerWidth</dt>',
+      '<dd>' + innerWidth + '</dd>',
+      '<dt>innerHeight</dt>',
+      '<dd>' + innerHeight + '</dd>',
+      '<dt>screen.width</dt>',
+      '<dd>' + screenWidth + '</dd>',
+      '<dt>screen.height</dt>',
+      '<dd>' + screenHeight + '</dd>',
+      '<dt>Promise</dt>',
+      '<dd>' + promise + '</dd>',
+      '<dt>navigator.getUserMedia</dt>',
+      '<dd>' + navigatorGetUserMedia + '</dd>',
+      '<dt>mediadevices.getUserMedia</dt>',
+      '<dd>' + mediaDevicesGetUserMedia + '</dd>'
+    ].join('');
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+    document.getElementById('btnNavigatorGetUserMedia').addEventListener('click', function() {
+      try {
+        navigator.getUserMedia(
+          { audio: false, video: true },
+          function (stream) {
+             var video = document.getElementById('video');
+
+             video.srcObject = stream;
+
+             video.onloadedmetadata = function (evt) {
+               video.play();
+             };
+          },
+          function (err) {
+            console.error(err);
+            alert(err);
+          }
+        );
+      } catch (err) {
+        console.error(err);
+        alert(err);
+      }
+    });
+
+    document.getElementById('btnMediaDevicesGetUserMedia').addEventListener('click', function() {
+      try {
+        navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: true
+        }).then(function (stream) {
+          var video = document.getElementById('video');
+
+          video.srcObject = stream;
+          video.onloadedmetadata = function (evt) {
+            video.play();
+          };
+        });
+      } catch (err) {
+        console.error(err);
+        alert(err);
+      }
+    });
+  </script>
+</body>
+</html>

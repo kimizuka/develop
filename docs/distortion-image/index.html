@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>distortion-image</title>
+  <meta name="viewport" content="width=1200" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta property="og:title" content="distortion-image" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://develop.kimizuka.org/distortion-image/" />
+  <meta property="og:image" content="http://develop.kimizuka.org/distortion-image/ogp.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="distortion-image" />
+  <meta property="og:description" content="canvasをつかって画像を歪ませる" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@ki_230" />
+  <meta name="twitter:creator" content="@ki_230" />
+  <meta name="twitter:title" content="distortion-image" />
+  <meta name="twitter:description" content="canvasをつかって画像を歪ませる" />
+  <meta name="twitter:image:src" content="http://develop.kimizuka.org/distortion-image/ogp.png" />
+  <style type="text/css">
+    body {
+      text-align: center;
+    }
+
+    #wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      min-width: 1200px;
+      width: 100%; height: 600px;
+      font-size: 72px;
+    }
+
+    p {
+      margin: 24px;
+    }
+
+    input {
+      width: 200px;
+    }
+
+    input:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <img id="img" src="./image.png" onload="draw();" />
+    <p>👉</p>
+  </div>
+  <input id="input" type="range" value="0.5" min="0" max="1" step="0.05" />
+  <script>
+    function draw() {
+      const wrapper = document.getElementById('wrapper');
+      const input = document.getElementById('input');
+      const img = document.getElementById('img');
+
+      let canvas;
+
+      input.addEventListener('input', () => {
+        if (canvas) {
+          wrapper.removeChild(canvas);
+        }
+
+        canvas = getCurveCanvas(img, Number(input.value));
+
+        wrapper.appendChild(canvas);
+      });
+
+      input.dispatchEvent(new Event('input'));
+
+      function getCurveCanvas(img, rate) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const subCanvas = document.createElement('canvas');
+        const subCtx = subCanvas.getContext('2d');
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        subCanvas.width = 1;
+
+        for (let i = 0; i < canvas.width; ++i) {
+          const height = getHeight(i);
+
+          subCanvas.height = canvas.height;
+
+          subCtx.drawImage(img, -i, 0);
+          ctx.drawImage(subCanvas, i, (img.height - height) / 2, 1, height);
+        }
+
+        return canvas;
+
+        function getHeight(i) {
+          const center = img.width / 2;
+
+          return Math.sin((1 - Math.abs(i - center) / center * rate) * Math.PI / 2) * img.height;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

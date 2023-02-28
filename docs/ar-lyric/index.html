@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>lyric</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+</head>
+<body>
+  <a-scene embedded arjs="debugUIEnabled: false" vr-mode-ui="enabled: false">
+    <a-assets>
+      <img id="img" src="lyric.png" />
+      <canvas id="canvas"></canvas>
+      <audio id="audio" src="audio.mp3"></audio>
+    </a-assets>
+    <a-marker type='pattern' url='./pattern-g.patt'>
+      <a-box wireframe="true"></a-box>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+  <script>
+    AFRAME.registerComponent('plane', {
+      init: function () {
+        this.audio = document.getElementById('audio');
+        this.canvas = document.getElementById('canvas');
+        this.ctx = canvas.getContext('2d');
+        this.y = 4800;
+
+        const that = this;
+        const request = new XMLHttpRequest;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        request.onload = function() {
+          audioCtx.decodeAudioData(this.response, function(evt) {
+            const source = audioCtx.createBufferSource();
+            const analyser = audioCtx.createAnalyser(evt);
+
+            const length = 32;
+            const data = new Uint8Array(length);
+
+            analyser.fftSize = 1024;
+
+            source.buffer = evt;
+            source.connect(audioCtx.destination);
+            source.connect(analyser);
+
+            source.loop = true;
+            that.img = document.getElementById('img');
+
+            window.addEventListener('click', function handleClick() {
+              source.start();
+              this.removeEventListener('click', handleClick, false);
+            }, false);
+
+            tick();
+
+            function tick() {
+              analyser.getByteFrequencyData(data);
+              that.frequencyData = data;
+
+              requestAnimationFrame(tick);
+            }
+          });
+        };
+
+        request.open('GET', 'audio.mp3', true);
+        request.responseType = 'arraybuffer';
+
+        request.send();
+      },
+      tick: function () {
+        const material = this.el.getObject3D('mesh').material;
+
+        if (!material.map) {
+          return;
+        }
+
+        if (!this.frequencyData || !this.frequencyData[0]) {
+          return;
+        }
+
+        const length = 32;
+        const fontSize = 88;
+        const w = this.canvas.width / length;
+
+        this.canvas.width = 900;
+        this.canvas.height = 3200;
+        this.y -= 40;
+
+        this.ctx.save();
+          this.ctx.filter = 'blur(16px)';
+          this.ctx.globalAlpha = .2;
+          this.ctx.fillStyle = '#fff';
+
+          for (let i = 0; i < length; ++i) {
+            this.ctx.rect(i * w, this.canvas.height - this.frequencyData[i] * 1.8, w, this.frequencyData[i] * 1.8);
+          }
+
+          this.ctx.fill();
+        this.ctx.restore();
+
+        this.ctx.save();
+          this.ctx.filter = 'blur(2px)';
+          this.ctx.drawImage(this.img, this.canvas.width / 2 - 40, this.y, 120 * 2, 5380 * 2);
+        this.ctx.restore();
+
+        // material.map.needsUpdate = true;
+      }
+    });
+
+    const plane = document.createElement('a-plane');
+
+    plane.setAttribute('plane', 'plane');
+    plane.setAttribute('rotation', '-90 0 0');
+    plane.setAttribute('position', '0 -32 -15');
+    plane.setAttribute('width', '4.5');
+    plane.setAttribute('height', '16');
+    plane.setAttribute('material', 'shader: flat; src: #canvas; opacity: .9;');
+
+    document.getElementsByTagName('a-marker')[0].appendChild(plane);
+
+    setInterval(() => {
+      console.log(plane.getObject3D('mesh').material.map.needsUpdate = true);
+    }, 100);
+  </script>
+</body>
+</html>

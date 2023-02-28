@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>position: fixed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style>
+    body {
+      height: 999vh;
+    }
+
+    p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 50%;
+      width: 80px; height: 80px;
+      color: #eee;
+      font-size: 10px;
+      background: #333;
+    }
+
+    div:nth-child(1) p {
+      left: 0;
+    }
+
+    div:nth-child(2) p {
+      left: calc(50% - 40px);
+    }
+
+    div:nth-child(3) p {
+      right: 0;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <p>fixed</p>
+  </div>
+  <div style="transform: translate3d(0, 0, 0);">
+    <p>translate3d</p>
+  </div>
+  <div style="filter: blur(0);">
+    <p>filter</p>
+  </div>
+</body>
+</html>

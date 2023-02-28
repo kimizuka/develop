@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>download</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    section {
+      margin: auto;
+      width: 320px;
+    }
+
+    a {
+      display: inline-block;
+      width: 100%;
+    }
+
+    a:nth-child(1) {
+      height: 320px;
+      background: url(photo.jpg) center no-repeat;
+      background-size: contain;
+    }
+
+    a:nth-child(2) {
+      height: 168px;
+      background: url(anime.gif) center no-repeat;
+      background-size: contain;
+    }
+
+    a:nth-child(3) {
+      height: 180px;
+      background: url(thumbnail.png) center no-repeat;
+      background-size: contain;
+    }
+
+    img {
+      width: 100%;
+    }
+
+    video {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <h1>href</h1>
+    <div>
+      <a
+        href="photo.jpg"
+      ></a>
+      <a
+        href="anime.gif"
+      ></a>
+      <a
+        href="movie.mp4"
+      ></a>
+    </div>
+  </section>
+  <section>
+    <h1>download</h1>
+    <div>
+      <a
+        download
+        href="photo.jpg"
+      ></a>
+      <a
+        download
+        href="anime.gif"
+      ></a>
+      <a
+        download
+        href="movie.mp4"
+      ></a>
+    </div>
+  </section>
+  <section>
+    <h1>img</h1>
+    <div>
+      <img src="photo.jpg" />
+      <img src="anime.gif" />
+      <video src="movie.mp4" poster="thumbnail.png" controls playsinline></video>
+    </div>
+  </section>
+</body>
+</html>

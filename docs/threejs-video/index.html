@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebGL</title>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      background: black;
+      height: 2000vh;
+    }
+
+    canvas {
+      display: block;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from './build/three.module.js';
+
+    const width = 640;
+    const height = 356;
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+
+    renderer.setSize(width, height);
+
+    const camera = new THREE.OrthographicCamera(0, width, 0, height, .1, 10000);
+
+    camera.position.set(0, 0, 1);
+
+    const scene = new THREE.Scene();
+
+    scene.add(new THREE.AmbientLight(0xFFFFFF));
+
+    const video = document.createElement('video');
+
+    video.src = '/video.mp4';
+
+    const texture = new THREE.VideoTexture(video);
+
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
+
+    const geometry = new THREE.PlaneGeometry(width, height, 1, 1);
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.FrontSide
+    });
+    const plane = new THREE.Mesh(geometry, material);
+
+    plane.position.set(width / 2, height / 2, 0);
+    plane.rotation.x = Math.PI;
+    scene.add(plane);
+
+    let bool = false;
+
+    window.addEventListener('scroll', () => {
+      const progress = (window.scrollY / window.innerHeight) / 20;
+
+      video.currentTime = video.duration * progress;
+    });
+
+    document.body.appendChild(renderer.domElement);
+    tick();
+
+    function tick() {
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+  </script>
+</body>
+</html>

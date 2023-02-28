@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>scratch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let timer;
+    let lastRot = {};
+
+    AFRAME.registerComponent('marker', {
+      init: function () {
+        const marker = this.el;
+        const entity = document.getElementById('box');
+        const audio = document.getElementById('audio');
+
+        console.dir(audio);
+
+        marker.addEventListener('markerFound', function () {
+          const firstMarkerPos = Object.assign({}, marker.getAttribute('rotation'));
+
+          clearInterval(timer);
+          timer = setInterval(() => {
+            const rot = marker.getAttribute('rotation');
+
+            if (lastRot) {
+              const diffRotX = rot.x - lastRot.x;
+              const diffRotY = rot.y - lastRot.y;
+              const diffRotZ = rot.z - lastRot.z;
+
+              const diffRot = Math.abs(diffRotX) + Math.abs(diffRotY) + Math.abs(diffRotZ);
+
+              if (diffRot > 3) {
+                audio.play();
+              } else {
+                audio.pause();
+                audio.currentTime = 0;
+              }
+            }
+
+            lastRot = Object.assign({}, rot);
+          }, 100);
+        });
+
+        marker.addEventListener('markerLost', function () {
+
+        });
+      }
+    });
+  </script>
+  <a-scene embedded arjs="debugUIEnabled: false" vr-mode-ui="enabled: false">
+    <a-assets>
+      <audio id="audio" src="skratch.mp3" loop></audio>
+      <a-asset-item id="dance" src="record.glb"></a-asset-item>
+    </a-assets>
+    <a-marker marker type='pattern' url='./pattern.patt'>
+      <a-entity id="box" rotation="0 0 0">
+        <a-entity gltf-model="#dance" position="0 .2 0" scale=".05 .05 .05"></a-entity>
+      </a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>

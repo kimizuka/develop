@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <meta charset="UTF-8" />
+  <title>micro:bit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+</head>
+<body>
+  <button id="connect">接続</button>
+  <button id="disconnect">切断</button>
+  <script>
+    const LED_SERVICE_UUID = 'e95dd91d-251d-470a-a062-fa1922dfa9a8';
+    const LED_MATRIX_STATE = 'e95d7b77-251d-470a-a062-fa1922dfa9a8';
+    const microBitList = [];
+    const ctxList = [];
+    const numList = [[
+      '01110',
+      '01010',
+      '01010',
+      '01010',
+      '01110'
+    ],[
+      '00100',
+      '00100',
+      '00100',
+      '00100',
+      '00100'
+    ],[
+      '01110',
+      '00010',
+      '01110',
+      '01000',
+      '01110'
+    ],[
+      '01110',
+      '00010',
+      '01110',
+      '00010',
+      '01110'
+    ],[
+      '01010',
+      '01010',
+      '01110',
+      '00010',
+      '00010'
+    ],[
+      '01110',
+      '01000',
+      '01110',
+      '00010',
+      '01110'
+    ],[
+      '01110',
+      '01000',
+      '01110',
+      '01010',
+      '01110'
+    ],[
+      '01110',
+      '00010',
+      '00010',
+      '00010',
+      '00010'
+    ],[
+      '01110',
+      '01010',
+      '01110',
+      '01010',
+      '01110'
+    ],[
+      '01110',
+      '01010',
+      '01110',
+      '00010',
+      '01110'
+    ],[
+      '10111',
+      '10101',
+      '10101',
+      '10101',
+      '10111'
+    ],[
+      '10010',
+      '10010',
+      '10010',
+      '10010',
+      '10010'
+    ],[
+      '10111',
+      '10001',
+      '10111',
+      '10100',
+      '10111'
+    ],[
+      '10111',
+      '10001',
+      '10111',
+      '10001',
+      '10111'
+    ],[
+      '10101',
+      '10101',
+      '10111',
+      '10001',
+      '10001'
+    ],[
+      '10111',
+      '10100',
+      '10111',
+      '10001',
+      '10111'
+    ],[
+      '10111',
+      '10100',
+      '10111',
+      '10101',
+      '10111'
+    ],[
+      '10111',
+      '10001',
+      '10001',
+      '10001',
+      '10001'
+    ],[
+      '10111',
+      '10101',
+      '10111',
+      '10101',
+      '10111'
+    ],[
+      '10111',
+      '10101',
+      '10111',
+      '10001',
+      '10111'
+    ]];
+    let count = 0;
+
+    document.getElementById('connect').addEventListener('click', async () => {
+      const microBit = await navigator.bluetooth.requestDevice({
+        filters: [{
+          services: [
+            LED_SERVICE_UUID
+          ]
+        },{
+          namePrefix: 'BBC micro:bit'
+        }]
+      });
+
+      const server = await microBit.gatt.connect();
+      const primaryService = await server.getPrimaryService(LED_SERVICE_UUID);
+
+      ctx = await primaryService.getCharacteristic(LED_MATRIX_STATE);
+
+      microBitList.push(microBit);
+      ctxList.push(ctx);
+    });
+
+    render();
+
+    function render() {
+      if (microBitList.length) {
+        const array = new Uint8Array(5);
+
+        numList[count].forEach((str, i) => {
+          array[i] = parseInt(str, 2);
+        });
+
+        ctxList.forEach((ctx) => {
+          ctx.writeValue(array);
+        });
+
+        count = (count + 1) % numList.length;
+      }
+
+      setTimeout(render, 1000);
+    }
+
+    document.getElementById('disconnect').addEventListener('click', () => {
+      if (microBit) {
+        microBit.gatt.disconnect();
+        microBit = null;
+      }
+    });
+  </script>
+</body>
+</html>

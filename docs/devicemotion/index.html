@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>devicemotion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <meta name="description" content="devicemotion検証" />
+  <meta name="author" content="君塚史高" />
+  <meta name="generator" content="Sublime Text 3" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="canonical" href="https://develop.kimizuka.org/devicemotion/" />
+  <style>
+    #x:before {
+      content: 'x: ';
+    }
+
+    #y:before {
+      content: 'y: ';
+    }
+
+    #z:before {
+      content: 'z: ';
+    }
+  </style>
+</head>
+<body>
+  <p id="x"></p>
+  <p id="y"></p>
+  <p id="z"></p>
+  <script>
+    window.addEventListener('devicemotion', (evt) => {
+      console.log(evt);
+      document.getElementById('x').innerText = evt.accelerationIncludingGravity.x;
+      document.getElementById('y').innerText = evt.accelerationIncludingGravity.y;
+      document.getElementById('z').innerText = evt.accelerationIncludingGravity.z;
+    });
+  </script>
+</body>
+</html>

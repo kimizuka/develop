@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>print</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: solid .1px;
+        width: 10px; height: 10px;
+        font-size: 10px;
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const ul = document.createElement('ul');
+
+      for (let i = 0; i < 9999; ++i) {
+        const li = document.createElement('li');
+        const arr = [...String(i)];
+
+        li.innerText = arr[arr.length - 1];
+
+        ul.appendChild(li);
+      }
+
+      document.body.appendChild(ul);
+    </script>
+  </body>
+</html>

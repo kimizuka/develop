@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="./html2canvas.min.js"></script>
+    <style>
+      #screenshot {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px; height: 200px;
+      }
+
+      .box + .box {
+        margin-left: 10px;
+      }
+
+      .mini-box {
+        width: 100px; height: 100px;
+      }
+
+      .red {
+        background: red;
+      }
+
+      .blue {
+        background: blue;
+      }
+
+      .screen {
+        mix-blend-mode: screen;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn-screenshot">screen shot</button>
+    <div id="screenshot">
+      <div class="box red">
+        <div class="mini-box blue"></div>
+      </div>
+      <div class="box red">
+        <div class="mini-box blue screen"></div>
+      </div>
+      <div class="box red">
+        <div class="screen">
+          <div class="mini-box blue"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.getElementById('btn-screenshot').addEventListener('click', () => {
+      html2canvas(document.getElementById('screenshot')).then((canvas) => {
+        downloadImage(canvas.toDataURL());
+      });
+
+      function downloadImage(dataUrl) {
+        const name = 'screenshot.png';
+        const a = document.createElement('a');
+
+        a.href = dataUrl;
+        a.download = name;
+        a.click();
+      }
+    });
+  </script>
+</html>

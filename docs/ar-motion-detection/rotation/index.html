@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>motion-detection-inertia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.1/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+      cursor: none;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    AFRAME.registerComponent('marker', {
+      init: function () {
+        const marker = this.el;
+        const entity = document.getElementById('box');
+        let timer = null;
+
+        marker.addEventListener('markerFound', function () {
+          const firstMarkerPos = Object.assign({}, marker.getAttribute('rotation'));
+          const firstEntityPos = dance.getAttribute('rotation');
+
+          clearInterval(timer);
+          timer = setInterval(() => {
+            const pos = marker.getAttribute('rotation');
+            const diffX = firstMarkerPos.x - pos.x;
+            const diffY = firstMarkerPos.y - pos.y;
+            const diffZ = firstMarkerPos.z - pos.z;
+
+            entity.setAttribute('rotation', `${diffX}, ${diffY}, ${diffZ}`);
+
+            console.log(entity.getAttribute('rotation'));
+          }, 100);
+        });
+
+        marker.addEventListener('markerLost', function () {
+
+        });
+      }
+    });
+  </script>
+  <a-scene
+    embedded
+    arjs="debugUIEnabled: false"
+    device-orientation-permission-ui="enabled: false"
+    vr-mode-ui="enabled: false"
+  >
+    <a-assets>
+      <a-asset-item id="dance" src="dance.glb"></a-asset-item>
+    </a-assets>
+    <a-marker marker type='pattern' url='./pattern.patt'>
+      <a-entity id="box" rotation="0 0 0">
+        <a-entity gltf-model="#dance" scale=".5 .5 .5" animation-mixer></a-entity>
+      </a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+</html>
