@@ -1,0 +1,164 @@
+{
+  "mocks": [{
+      "title": "ar-fox",
+      "text": "AFrameでWebARを試しました",
+      "link": "ar-fox/"
+    },{
+      "title": "ar-motion-detection",
+      "text": "WebARのマーカーの動体検知を試しました",
+      "link": "/ar-motion-detection/"
+    },{
+      "title": "arena",
+      "text": "Arenaの表示確認用",
+      "link": "/arena/"
+    },{
+      "title": "arupin",
+      "text": "ルパンっぽいWebARをつくりました",
+      "link": "/arupin/"
+    },{
+      "title": "attr",
+      "text": "data属性の値をCSS内で取得してみました",
+      "link": "/attr/"
+    },{
+      "title": "audio/autoplay",
+      "text": "audioタグのautoplay属性確認用",
+      "link": "/audio/autoplay/"
+    },{
+      "title": "autocapitalize",
+      "text": "autocapitalize属性確認用",
+      "link": "/autocapitalize/"
+    },{
+      "title": "bom",
+      "text": "canvasで動画の緑の部分を透過させてみました",
+      "link": "/bom/"
+    },{
+      "title": "canvas-monochro",
+      "text": "canvasで動画をモノクロにしてみました",
+      "link": "/canvas-monochro/"
+    },{
+      "title": "car",
+      "text": "Cのマーカーに車を出現させるARです",
+      "link": "/car/"
+    },{
+      "title": "chartist",
+      "text": "Chartist.jsを使って円グラフを描画してみました",
+      "link": "/chartist/?sugoi=50&suteki=50"
+    },{
+      "title": "cow",
+      "text": "WebARで牛を表示してみました",
+      "link": "/cow/"
+    },{
+      "title": "cube",
+      "text": "Three.jsでcubeをレンダリングしてみました",
+      "link": "/cube/?1,1,1,1,1,1,1,1"
+    },{
+      "title": "data-attribute",
+      "text": "data属性を動的に変更してスタイルが反映されるかを確認しました",
+      "link": "/data-attribute/"
+    },{
+      "title": "devicemotion",
+      "text": "加速度センサへのアクセスを試みました",
+      "link": "/devicemotion/"
+    },{
+      "title": "deviceorientation",
+      "text": "ジャイロセンサへのアクセスを試みました",
+      "link": "/deviceorientation/"
+    },{
+      "title": "distortion-image",
+      "text": "Canvasで画像を歪ませてみました",
+      "link": "/distortion-image/"
+    },{
+      "title": "download",
+      "text": "download属性確認用",
+      "link": "/download/"
+    },{
+      "title": "fft",
+      "text": "FFTテスト用",
+      "link": "/fft/"
+    },{
+      "title": "file-upload",
+      "text": "inputタグを使ったファイルアップローダー",
+      "link": "/file-upload/"
+    },{
+      "title": "fixed",
+      "text": "position:fixedが無効になる組み合わせを調査",
+      "link": "/fixed/"
+    },{
+      "title": "font-weight",
+      "text": "font-weight確認用",
+      "link": "/font-weight/"
+    },{
+      "title": "googleform",
+      "text": "GoogleForm確認用",
+      "link": "/googleform/"
+    },{
+      "title": "input-inputmode",
+      "text": "input-inputmode属性確認用",
+      "link": "/input-inputmode/"
+    },{
+      "title": "input-type",
+      "text": "input-type属性確認用",
+      "link": "/input-type/"
+    },{
+      "title": "katazukue",
+      "text": "ARマーカーの認識が切れた秒数をカウント",
+      "link": "/katazukue/"
+    },{
+      "title": "keyboard-scroll",
+      "text": "スマホでキーボード出現時にその分だけスクロールするテスト",
+      "link": "/keyboard-scroll/"
+    },{
+      "title": "likelikelike",
+      "text": "世界のいいねボタン",
+      "link": "/likelikelike/"
+    },{
+      "title": "mic",
+      "text": "マイク入力確認用",
+      "link": "/mic/"
+    },{
+      "title": "overflow-scroll",
+      "text": "-webkit-overflow-scrolling: touch 不要説",
+      "link": "/overflow-scroll/"
+    },{
+      "title": "post-message",
+      "text": "post-message確認用",
+      "link": "/post-message/"
+    },{
+      "title": "scroll-snap",
+      "text": "CSSでスクロールスナップ",
+      "link": "/scroll-snap/"
+    },{
+      "title": "smallchat",
+      "text": "smallchat確認用",
+      "link": "/smallchat/"
+    },{
+      "title": "speech-recognition",
+      "text": "音声認識",
+      "link": "/speech-recognition/"
+    },{
+      "title": "togetherjs",
+      "text": "TogetherJS確認用",
+      "link": "/togetherjs/"
+    },{
+      "title": "vibration",
+      "text": "バイブレーションAPI",
+      "link": "/vibration/"
+    },{
+      "title": "video",
+      "text": "単純なvideoタグ",
+      "link": "/video/"
+    },{
+      "title": "window-click",
+      "text": "windowへのclickイベント確認用",
+      "link": "/window-click/"
+    },{
+      "title": "window-click/bubbling",
+      "text": "windowへのclickイベント確認用（バブリング）",
+      "link": "/window-click/bubbling/"
+    },{
+      "title": "youtube/autoplay",
+      "text": "YouTube iFrame APIでの自動再生",
+      "link": "/youtube/autoplay/"
+    }
+  ]
+}

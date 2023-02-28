@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>camera</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <style>
+    body {
+      margin: 0; padding: 0;
+    }
+
+    video {
+      width: 100%; height: 100%;
+    }
+  </style>
+  <script src="./socket.io.min.js"></script>
+</head>
+<body>
+  <video id="video" autoplay playsinline muted></video>
+  <script>
+    navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: {
+          exact: 'environment'
+        }
+      }
+    }).then((stream) => {
+      const FPS = 8;
+      const socket = io.connect();
+      const video = document.getElementById('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      video.oncanplay = () => {
+        const width = video.clientWidth / 2;
+        const height = video.clientHeight / 2;
+
+        tick();
+
+        function tick() {
+          const begin = Date.now();
+
+          canvas.width = width;
+          canvas.height = height;
+
+          ctx.drawImage(video, 0, 0, width, height);
+
+          const dataURL = canvas.toDataURL('image/jpeg');
+
+          socket.emit('video', {
+            dataURL
+          });
+
+          const delay = 1000 / FPS - (Date.now() - begin);
+
+          setTimeout(tick, delay);
+        }
+      };
+
+      video.srcObject = stream;
+    }).catch((err) => alert(err));
+  </script>
+</body>
+</html>

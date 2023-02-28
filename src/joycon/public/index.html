@@ -1,0 +1,76 @@
+<html>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+  <body>
+    <button class="connect">connect</button>
+
+    <dl>
+      <dt>Joy-Con (L)</dt>
+      <dd>
+        <ul id="Joy-Con (L)">
+          <li>X:</li>
+          <li>Y:</li>
+          <li>Z:</li>
+        </ul>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Joy-Con (R)</dt>
+      <dd>
+        <ul id="Joy-Con (R)">
+          <li>X:</li>
+          <li>Y:</li>
+          <li>Z:</li>
+        </ul>
+      </dd>
+    </dl>
+
+    <script type="module">
+      import * as JoyCon from './joy-con-webhid/dist/index.js';
+
+      const countLength = 10;
+      const totals = {
+        'Joy-Con (L)': new Array(countLength).fill(0),
+        'Joy-Con (R)': new Array(countLength).fill(0)
+      };
+      let count = 0;
+
+      document.querySelector('.connect').addEventListener('click', async () => {
+        await JoyCon.connectJoyCon();
+
+        for (const joyCon of JoyCon.connectedJoyCons.values()) {
+          joyCon.addEventListener('hidinput', ({ detail }) => {
+            if (detail.actualAccelerometer) {
+              const total = Math.abs(detail.actualAccelerometer.x) + Math.abs(detail.actualAccelerometer.y) + Math.abs(detail.actualAccelerometer.z);
+
+              totals[joyCon.device.productName][count] = total;
+
+              const average = _.mean(totals[joyCon.device.productName]);
+
+              document.getElementById(joyCon.device.productName).innerHTML = `
+<li>X: ${ detail.actualAccelerometer.x }</li>
+<li>Y: ${ detail.actualAccelerometer.y }</li>
+<li>Z: ${ detail.actualAccelerometer.z }</li>
+<li>average: ${ average }</li>
+<li>batteryLevel: ${ detail.batteryLevel.level }</li>
+<li>${ average > .04 ? 'HIT!' : '' }</li>
+              `;
+
+              count = (count + 1) % countLength;
+            }
+          });
+        }
+        // const joyCon = JoyCon.connectedJoyCons.values();
+
+        //           await joyCon.open();
+        //   await joyCon.enableStandardFullMode();
+        //   await joyCon.enableIMUMode();
+        //   await joyCon.enableVibration();
+        // joyCon.addEventListener('hidinput', ({ detail }) => {
+        //     console.log(`Input report from ${joyCon.device.productName}:`, detail);
+        //     console.log(detail);
+        //   });
+      });
+    </script>
+  </body>
+</html>

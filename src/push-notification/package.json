@@ -1,0 +1,12 @@
+{
+  "name": "push-notification",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^10.2.0"
+  }
+}

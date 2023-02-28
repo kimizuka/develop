@@ -1,0 +1,49 @@
+{
+  "name": "note-cover-generator",
+  "version": "1.0.0",
+  "description": "note-cover-generator",
+  "main": "app.js",
+  "scripts": {
+    "update": "ncu -u",
+    "start": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "serve": "node serve.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kimizuka/webpack.git"
+  },
+  "author": "kimizuka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kimizuka/webpack/issues"
+  },
+  "homepage": "https://github.com/kimizuka/webpack#readme",
+  "browserslist": {
+    "browsers": [
+      "last 2 versions",
+      "Android >= 4",
+      "iOS >= 10"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "autoprefixer": "^9.8.0",
+    "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^6.0.1",
+    "css-loader": "^3.5.3",
+    "express": "^4.17.1",
+    "imagemin-webpack-plugin": "^2.4.2",
+    "mini-css-extract-plugin": "^0.9.0",
+    "node-sass": "^4.14.1",
+    "npm-check-updates": "^6.0.1",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}

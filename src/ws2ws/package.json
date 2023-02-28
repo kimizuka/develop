@@ -1,0 +1,16 @@
+{
+  "name": "ws2ws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "main": "node 3000/index.js",
+    "sub": "node 3030/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ip": "^1.1.5",
+    "request": "^2.88.2",
+    "ws": "^7.3.0"
+  }
+}
