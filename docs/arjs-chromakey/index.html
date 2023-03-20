@@ -1,0 +1,177 @@
+<html>
+<head>
+  <title>three.js + ar.js</title>
+  <meta name="viewport" content="width=device-width, viewport-fit=cover, shrink-to-fit=no" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .resource {
+      position: fixed;
+      top: 0; left: 0;
+    }
+
+    .resource video {
+      display: none;
+    }
+
+    [data-current-color='red'] .red {
+      display: block;
+    }
+
+    [data-current-color='green'] .green {
+      display: block;
+    }
+
+    [data-current-color='blue'] .blue {
+      display: block;
+    }
+
+    .ui {
+      position: fixed;
+      top: 0; right: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div data-current-color="red" class="resource">
+      <video class="red" src="./video/red.mp4" width="120" muted autoplay loop></video>
+      <video class="green" src="./video/green.mp4" width="120" muted autoplay loop></video>
+      <video class="blue" src="./video/blue.mp4" width="120" muted autoplay loop></video>
+    </div>
+    <div class="ui">
+      <select>
+        <option value="red">red</option>
+        <option value="green">green</option>
+        <option value="blue">blue</option>
+      </select>
+      <label>
+        <input class="chromakey" type="checkbox" />
+        <span>chromakey</span>
+      </label>
+    </div>
+    <canvas></canvas>
+  </div>
+  <script src="https://unpkg.com/three@0.127.0/build/three.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.3/three.js/build/ar.js"></script>
+  <script>
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.querySelector('canvas'),
+      antialias: true,
+      alpha: true
+    });
+    const camera = new THREE.PerspectiveCamera();
+    const scene = new THREE.Scene();
+    const markerRoot = new THREE.Group();
+    const arToolkitContext = new THREEx.ArToolkitContext({
+      cameraParametersUrl: './camera.dat',
+      detectionMode: 'mono'
+    });
+    const arToolkitSource = new THREEx.ArToolkitSource({
+      sourceType: 'webcam'
+    });
+    const arMarkerControl = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+      type: 'pattern',
+      patternUrl: 'pattern.patt'
+    });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentColor = 'red';
+
+    document.querySelector('select').addEventListener('change', (evt) => {
+      currentColor = evt.target.value;
+      document.querySelector('[data-current-color]').dataset.currentColor = currentColor;
+    });
+
+    canvas.width =  640;
+    canvas.height = 480;
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    window.addEventListener('resize', handleResize, {
+      passive: true
+    });
+
+    arToolkitContext.init(() => {
+      camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+    });
+
+    arToolkitSource.init(() => {
+      document.querySelector('.wrapper').appendChild(arToolkitSource.domElement);
+      setTimeout(() => handleResize(), 400);
+    });
+
+    scene.add(markerRoot);
+
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.2, 2.4),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.CanvasTexture(canvas)
+      })
+    );
+    plane.position.set(0, 1.2, 0);
+
+    markerRoot.add(plane);
+
+    renderer.setAnimationLoop((delta) => {
+      if (arToolkitSource.ready) {
+        arToolkitContext.update(arToolkitSource.domElement);
+      }
+
+      ctx.drawImage(
+        document.querySelector(`video.${ currentColor }`),
+        0,
+        0,
+        640,
+        480
+      );
+
+      if (document.querySelector('.chromakey').checked) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const { data } = imageData;
+
+        for (let i = 0; i < data.length; i += 4) {
+          switch (currentColor) {
+            case 'red':
+              if (data[i] === 255 && data[i + 1] < 50 && data[i + 2] < 50) {
+                data[i + 3] = 0;
+              }
+              break;
+            case 'green':
+              if (data[i + 1] === 216 && data[i] < 50 && data[i + 2] < 50) {
+                data[i + 3] = 0;
+              }
+              break;
+            case 'blue':
+              if (data[i + 2] === 255 && data[i] < 50 && data[i +12] < 50) {
+                data[i + 3] = 0;
+              }
+              break;
+          }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      plane.material.map.needsUpdate = true;
+      renderer.render(scene, camera);
+    });
+
+    function handleResize() {
+      if (arToolkitSource.ready) {
+        arToolkitSource.onResize();
+        arToolkitSource.copySizeTo(renderer.domElement);
+      }
+
+      renderer.setPixelRatio(window.devicePixelRatio);
+    }
+  </script>
+</body>
+</html>
