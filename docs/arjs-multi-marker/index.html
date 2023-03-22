@@ -36,12 +36,12 @@
     const arToolkitSource = new THREEx.ArToolkitSource({
       sourceType: 'webcam'
     });
-    const arMarkerControlss = [
-      new THREEx.arMarkerControlss(arToolkitContext, markerRootAb, {
+    const arMarkerControls = [
+      new THREEx.arMarkerControls(arToolkitContext, markerRootAb, {
         type: 'pattern',
         patternUrl: 'pattern-ab.patt'
       }),
-      new THREEx.arMarkerControlss(arToolkitContext, markerRootYz, {
+      new THREEx.arMarkerControls(arToolkitContext, markerRootYz, {
         type: 'pattern',
         patternUrl: 'pattern-yz.patt'
       })
