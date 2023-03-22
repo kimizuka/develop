@@ -43,7 +43,7 @@
     const arToolkitSource = new THREEx.ArToolkitSource({
       sourceType: 'webcam'
     });
-    const arMarkerControl = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+    const arMarkerControls = new THREEx.arMarkerControlss(arToolkitContext, markerRoot, {
       type: 'pattern',
       patternUrl: 'pattern.patt'
     });
@@ -67,7 +67,7 @@
     });
 
     // マーカーが認識されている限り発火し続ける
-    arMarkerControl.addEventListener('markerFound', () => {
+    arMarkerControls.addEventListener('markerFound', () => {
       if (markerState === 'lost') {
         console.log('Found');
         document.querySelector('.console').innerText = 'Found';
@@ -76,11 +76,11 @@
       markerState = 'found';
 
       clearTimeout(timer);
-      timer = setTimeout(() => arMarkerControl.dispatchEvent({ type: 'markerLost' }),  lostDelay); // markerLostを発火させる
+      timer = setTimeout(() => arMarkerControls.dispatchEvent({ type: 'markerLost' }),  lostDelay); // markerLostを発火させる
     });
 
     // 実装されていないので発火しない
-    arMarkerControl.addEventListener('markerLost', () => {
+    arMarkerControls.addEventListener('markerLost', () => {
       console.log('Lost');
       document.querySelector('.console').innerText = 'Lost';
       markerState = 'lost';

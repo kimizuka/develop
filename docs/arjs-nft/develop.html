@@ -34,7 +34,7 @@
     const arToolkitSource = new THREEx.ArToolkitSource({
       sourceType: 'webcam'
     });
-    const arMarkerControl = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+    const arMarkerControls = new THREEx.arMarkerControlss(arToolkitContext, camera, {
       type: 'nft',
       descriptorsUrl : 'marker/54',
       changeMatrixMode: 'cameraTransformMatrix'
