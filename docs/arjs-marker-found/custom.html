@@ -1,0 +1,118 @@
+<html>
+<head>
+  <title>three.js + ar.js</title>
+  <meta name="viewport" content="width=device-width, viewport-fit=cover, shrink-to-fit=no" />
+  <style>
+    * {
+      margin: 0; padding: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .console {
+      position: fixed;
+      top: 8px;
+      right: 8px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <canvas></canvas>
+    <p class="console"></p>
+  </div>
+  <script src="https://unpkg.com/three@0.127.0/build/three.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.3/three.js/build/ar.js"></script>
+  <script>
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.querySelector('canvas'),
+      antialias: true,
+      alpha: true
+    });
+    const camera = new THREE.PerspectiveCamera();
+    const scene = new THREE.Scene();
+    const markerRoot = new THREE.Group();
+    const arToolkitContext = new THREEx.ArToolkitContext({
+      cameraParametersUrl: './camera.dat',
+      detectionMode: 'mono'
+    });
+    const arToolkitSource = new THREEx.ArToolkitSource({
+      sourceType: 'webcam'
+    });
+    const arMarkerControl = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+      type: 'pattern',
+      patternUrl: 'pattern.patt'
+    });
+    const lostDelay = 100;
+    let markerState = 'lost';
+    let timer = -1;
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    window.addEventListener('resize', handleResize, {
+      passive: true
+    });
+
+    arToolkitContext.init(() => {
+      camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+    });
+
+    arToolkitSource.init(() => {
+      document.querySelector('.wrapper').appendChild(arToolkitSource.domElement);
+      setTimeout(() => handleResize(), 400);
+    });
+
+    // マーカーが認識されている限り発火し続ける
+    arMarkerControl.addEventListener('markerFound', () => {
+      if (markerState === 'lost') {
+        console.log('Found');
+        document.querySelector('.console').innerText = 'Found';
+      }
+
+      markerState = 'found';
+
+      clearTimeout(timer);
+      timer = setTimeout(() => arMarkerControl.dispatchEvent({ type: 'markerLost' }),  lostDelay); // markerLostを発火させる
+    });
+
+    // 実装されていないので発火しない
+    arMarkerControl.addEventListener('markerLost', () => {
+      console.log('Lost');
+      document.querySelector('.console').innerText = 'Lost';
+      markerState = 'lost';
+    });
+
+    scene.add(markerRoot);
+
+    const cube = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.MeshNormalMaterial()
+    );
+
+    cube.position.set(0, .5, 0);
+
+    markerRoot.add(cube);
+
+    renderer.setAnimationLoop((delta) => {
+      if (arToolkitSource.ready) {
+        arToolkitContext.update(arToolkitSource.domElement);
+      }
+
+      renderer.render(scene, camera);
+    });
+
+    function handleResize() {
+      if (arToolkitSource.ready) {
+        arToolkitSource.onResize();
+        arToolkitSource.copySizeTo(renderer.domElement);
+      }
+
+      renderer.setPixelRatio(window.devicePixelRatio);
+    }
+  </script>
+</body>
+</html>
