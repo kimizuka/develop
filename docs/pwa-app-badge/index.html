@@ -11,7 +11,7 @@
     <button class="badge">badge</button>
     <button class="clear">clear</button>
     <button class="reload">reload</button>
-    <textarea id="permission"></textarea>
+    <p id="permission"></p>
     <script type="module">
       document.querySelector('.push').addEventListener('click', requestPermission);
       document.querySelector('.badge').addEventListener('click', () => {
@@ -30,7 +30,7 @@
         }
 
         Notification.requestPermission().then((permission) => {
-          document.getElementById('permission').value = permission;
+          document.getElementById('permission').innerText = permission;
         });
       }
     </script>
