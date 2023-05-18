@@ -7,6 +7,7 @@ const initNow = Date.now();
 export default function IndexPage() {
   const [ count, setCount ] = useState(0);
   const [ now, setNow ] = useState(initNow);
+  const [ clickCount, setClickCount ] = useState(0);
   const [ fps ] = useState(8);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function IndexPage() {
 
   return (
     <Wrapper>
-      {/* <dl>
+      <dl>
         <dt>Date.now</dt>
         <dd>
           <ReelNumbers
@@ -27,7 +28,7 @@ export default function IndexPage() {
             fps={ fps }
           />
         </dd>
-      </dl> */}
+      </dl>
       <dl>
         <dt>loop</dt>
         <dd>
@@ -37,14 +38,19 @@ export default function IndexPage() {
             minDigits={ 1 }
             fps={ fps }
           />
+        </dd>
+      </dl>
+      <dl
+        style={{
+          cursor: 'pointer',
+          userSelect: 'none'
+        }}
+        onClick={ () => setClickCount(clickCount + 1) }
+      >
+        <dt>click</dt>
+        <dd>
           <ReelNumbers
-            currentNumber={ (count + 1) % 10 }
-            initNumber={ 0 }
-            minDigits={ 1 }
-            fps={ fps }
-          />
-          <ReelNumbers
-            currentNumber={ (count + 2) % 10 }
+            currentNumber={ clickCount }
             initNumber={ 0 }
             minDigits={ 1 }
             fps={ fps }
