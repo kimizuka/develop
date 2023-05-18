@@ -1,0 +1,32 @@
+{
+  "name": "next-reel-number",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "yarn build && next export -o next-reel-number"
+  },
+  "dependencies": {
+    "@types/node": "20.2.0",
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.4",
+    "eslint": "8.40.0",
+    "eslint-config-next": "13.4.2",
+    "gsap": "^3.11.5",
+    "lodash": "^4.17.21",
+    "next": "13.4.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "reset-css": "^5.0.1",
+    "styled-components": "^6.0.0-rc.1",
+    "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.194",
+    "@types/styled-components": "^5.1.26",
+    "babel-plugin-styled-components": "^2.1.1"
+  }
+}
