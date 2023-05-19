@@ -1,27 +1,22 @@
 
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+
+export type typeDirection = '' | 'up' | 'down';
 
 export function ReelNumberOl({
   number,
   fps,
-  isStop = true
+  direction = '',
 }: {
   number: number;
   fps: number;
-  isStop?: boolean;
+  direction?: typeDirection;
 }) {
-  const [ isAnim, setIsAnim ] = useState(false);
   const lastNumberRef = useRef<number>(-1);
   const isInitRef = useRef<boolean>(true);
   const scrollRef = useRef<HTMLOListElement>(null);
-
-  useEffect(() => {
-    if (isInitRef.current) {
-      setIsAnim(!isStop);
-    }
-  }, [isStop]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -35,11 +30,11 @@ export function ReelNumberOl({
 
       gsap.to(progress, {
         current: 1,
-        duration: 1 / fps,
+        duration: direction === '' ? 0 : 1 / fps,
         ease: 'linear',
         onUpdate: () => {
           if (scrollRef.current) {
-            scrollRef.current.style.transform = `translateY(${ getNewY(number, progress.current) }%)`;
+            scrollRef.current.style.transform = `translateY(${ getNewY(direction, number, progress.current) }%)`;
           }
         }
       });
@@ -47,17 +42,24 @@ export function ReelNumberOl({
 
     lastNumberRef.current = number;
 
-    function getNewY(newNumber: number, progress: number) {
-      newNumber = !newNumber ? 10 : newNumber;
+    function getNewY(direction: typeDirection, newNumber: number, progress: number) {
+      switch (direction) {
+        case 'up':
+          newNumber = !newNumber ? 10 : newNumber;
 
-      return -100 / 11 * (newNumber - 1) - 100 / 11 * progress;
+          return -100 / 11 * (newNumber - 1) - 100 / 11 * progress;
+        case 'down':
+          return -100 / 11 * (newNumber + 1) + 100 / 11 * progress;
+        default:
+          return -100 / 11 * newNumber;
+      }
     }
   }, [number]);
 
   return (
     <Wrapper
       ref={ scrollRef }
-      data-is-stop={ String(!isAnim) }
+      className="reel-number-ol"
     >
       {[...new Array(10)].map((_, i) => {
         return (
@@ -70,7 +72,5 @@ export function ReelNumberOl({
 }
 
 const Wrapper = styled.ol`
-  &[data-is-stop='true'] {
-    transform: translateY(0) !important;
-  }
+  text-align: center;
 `;

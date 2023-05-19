@@ -5,37 +5,24 @@ import { ReelNumbers } from '@/components/ReelNumbers';
 const initNow = Date.now();
 
 export default function IndexPage() {
-  const [ count, setCount ] = useState(0);
-  const [ now, setNow ] = useState(initNow);
-  const [ clickCount, setClickCount ] = useState(0);
+  const [ countup, setCountUp ] = useState(0);
+  const [ countdown, setCountDown ] = useState(100);
   const [ fps ] = useState(8);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setCount((count + 1) % 10);
-      setNow(Date.now());
-    }, 1000 / fps);
-  }, [count]);
 
   return (
     <Wrapper>
-      <dl>
-        <dt>Date.now</dt>
+      <dl
+        style={{
+          cursor: 'pointer',
+          userSelect: 'none'
+        }}
+        onClick={ () => setCountUp(countup + 1) }
+      >
+        <dt>countup - click</dt>
         <dd>
           <ReelNumbers
-            currentNumber={ now }
-            initNumber={ initNow }
-            fps={ fps }
-          />
-        </dd>
-      </dl>
-      <dl>
-        <dt>loop</dt>
-        <dd>
-          <ReelNumbers
-            currentNumber={ count }
-            initNumber={ 0 }
-            minDigits={ 1 }
+            currentNumber={ countup }
+            minDigits={ 3 }
             fps={ fps }
           />
         </dd>
@@ -45,14 +32,13 @@ export default function IndexPage() {
           cursor: 'pointer',
           userSelect: 'none'
         }}
-        onClick={ () => setClickCount(clickCount + 1) }
+        onClick={ () => setCountDown(countdown - 1) }
       >
-        <dt>click</dt>
+        <dt>countdown - click</dt>
         <dd>
           <ReelNumbers
-            currentNumber={ clickCount }
-            initNumber={ 0 }
-            minDigits={ 1 }
+            currentNumber={ countdown }
+            minDigits={ 3 }
             fps={ fps }
           />
         </dd>
