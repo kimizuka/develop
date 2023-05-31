@@ -18,7 +18,7 @@ export function StyledComponentsRegistry({
     // @ts-ignore
     styledComponentsStyleSheet.instance.clearTag();
 
-    return styles;
+    return <>{ styles }</>;
   });
 
   if (typeof window !== 'undefined') return <>{children}</>;

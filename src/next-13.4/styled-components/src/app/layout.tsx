@@ -1,5 +1,5 @@
 import '@/styles/global.scss';
-import { StyledComponentsRegistry } from '@/app/styling/registry';
+import { StyledComponentsRegistry } from '@/app/styling/StyledComponentsRegistry';
 
 export const metadata = {
   title: 'styled-components',
