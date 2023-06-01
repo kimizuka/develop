@@ -8,7 +8,7 @@ const nextConfig = {
     }
   },
   output: 'export',
-  distDir: "view-transition-api",
+  distDir: 'view-transition-api',
   assetPrefix: isProd ? '/next-13-4/view-transition-api' : ''
 };
 

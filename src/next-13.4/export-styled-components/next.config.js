@@ -8,7 +8,7 @@ const nextConfig = {
     }
   },
   output: 'export',
-  distDir: "export-styled-components",
+  distDir: 'export-styled-components',
   assetPrefix: isProd ? '/next-13-4/export-styled-components' : ''
 };
 
