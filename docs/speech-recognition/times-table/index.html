@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+  <meta charset="UTF-8" />
+  <title>times-table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Noto+Sans&display=swap');
+
+    * {
+      margin: 0; padding: 0;
+    }
+
+    body {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      margin: 0; padding: 0;
+      color: #f8f8f8;
+      font: 36px 'Inter', 'Noto Sans JP', sans-serif;
+      line-height: 1.6em;
+      background: #282828;
+      cursor: none;
+    }
+
+    canvas {
+      display: block;
+      position: relative;
+    }
+
+    #answer {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      padding: 16px;
+      overflow: scroll;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #answer:focus {
+      outline: none;
+    }
+
+    #question {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      font-size: 240px;
+      white-space: pre-wrap;
+      z-index: 1;
+    }
+
+    .hot {
+      display: inline-block;
+      margin: 0 4px;
+      color: #f92472;
+      font-weight: bold;
+      animation: hot 1.2s ease-in-out infinite;
+    }
+
+    .shake {
+      animation: shake .2s ease-in-out 8;
+    }
+
+    @keyframes hot {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      20% {
+        transform: translate(5px, 5px);
+      }
+
+      40% {
+        transform: translate(-5px, -5px);
+      }
+
+      60% {
+        transform: translate(-5px, 5px);
+      }
+
+      80% {
+        transform: translate(5px, -5px);
+      }
+
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="question"></div>
+  <div id="answer"></div>
+  <script>
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false
+    }).then(function(stream) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser(stream);
+      const LENGTH = 32;
+      const data = new Uint8Array(LENGTH);
+      const recognition = new webkitSpeechRecognition();
+      const answer = document.getElementById('answer');
+      let isShake = false;
+      let lastP;
+      let question = '';
+
+      recognition.lang = 'ja';
+
+      recognition.addEventListener('result', (evt) => {
+        let txt = evt.results[0][0].transcript;
+
+        if (txt) {
+          const num = txt.match(/\d+/g);
+          const p = document.createElement('p');
+          const span = document.createElement('span');
+          const [a, b] = question.split('x').map((v) => parseInt(v, 10));
+
+          document.body.classList.remove('shake');
+
+          if (a * b === Number(num)) {
+            txt = `⭕️ ${ question } = ${ num }`;
+
+            if (a < 10 && b < 10) {
+              span.classList.add('hot');
+              buildQuestion();
+            }
+          } else {
+            txt = '❌ ' + txt;
+            document.body.classList.add('shake');
+          }
+
+          span.innerHTML = txt;
+
+          p.appendChild(span);
+          answer.appendChild(p);
+
+          p.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end'
+          });
+        }
+      }, false);
+
+      recognition.addEventListener('end', () => {
+        recognition.start();
+      });
+
+      recognition.start();
+
+      analyser.fftSize = 1024;
+
+      source.connect(analyser);
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      buildQuestion();
+      tick();
+
+      function tick() {
+        canvas.width = canvas.width;
+        canvas.height = canvas.height;
+
+        ctx.fillStyle = '#3e3e3e';
+
+        const w = canvas.width / LENGTH;
+
+        analyser.getByteFrequencyData(data);
+
+        for (let i = 0; i < LENGTH; ++i) {
+          ctx.rect(i * w, canvas.height - data[i], w, data[i]);
+        }
+
+        ctx.fill();
+
+        requestAnimationFrame(tick);
+      }
+
+      function buildQuestion() {
+        if (Number(location.hash.replace('#', '')) < 10) {
+          question = `${ location.hash.replace('#', '') } x ${ (Math.floor(Math.random() * 9) + 1) }`
+        } else {
+          question = `${ (Math.floor(Math.random() * 9) + 1) } x ${ (Math.floor(Math.random() * 9) + 1) }`
+        }
+
+        document.getElementById('question').innerText = question;
+      }
+    }).catch(function(err) {
+      console.error(err);
+    });
+  </script>
+</body>
+</html>
