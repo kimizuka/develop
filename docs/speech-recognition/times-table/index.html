@@ -132,18 +132,22 @@
       recognition.lang = 'ja';
 
       recognition.addEventListener('result', (evt) => {
-        let txt = evt.results[0][0].transcript;
+        let txt = evt.results[0][0].transcript.replace(/\s/g, '');
 
+        console.log(txt);
         if (txt) {
-          const num = txt.match(/\d+/g);
           const p = document.createElement('p');
           const span = document.createElement('span');
-          const [a, b] = question.split('x').map((v) => parseInt(v, 10));
+          const [a, b] = (() => {
+            txt = txt.replace(/×|X|かける|カケル|書ける|掛ける|翔|描ける|欠ける|賭ける/, 'x');
+
+            return txt.split('x');
+          })();
 
           document.body.classList.remove('shake');
 
-          if (a * b === Number(num)) {
-            txt = `⭕️ ${ question } = ${ num }`;
+          if (a * b === question) {
+            txt = `⭕️ ${ txt } = ${ question }`;
 
             if (a < 10 && b < 10) {
               span.classList.add('hot');
@@ -202,10 +206,12 @@
       }
 
       function buildQuestion() {
-        if (0 < Number(location.hash.replace('#', '')) && Number(location.hash.replace('#', '')) < 10) {
-          question = `${ location.hash.replace('#', '') } x ${ (Math.floor(Math.random() * 9) + 1) }`
+        const hash = Number(location.hash.replace('#', ''));
+
+        if (0 < hash && hash < 10) {
+          question = hash * (Math.floor(Math.random() * 9) + 1);
         } else {
-          question = `${ (Math.floor(Math.random() * 9) + 1) } x ${ (Math.floor(Math.random() * 9) + 1) }`
+          question = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 9) + 1);
         }
 
         document.getElementById('question').innerText = question;
