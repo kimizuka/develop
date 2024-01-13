@@ -202,7 +202,7 @@
       }
 
       function buildQuestion() {
-        if (Number(location.hash.replace('#', '')) < 10) {
+        if (0 < Number(location.hash.replace('#', '')) && Number(location.hash.replace('#', '')) < 10) {
           question = `${ location.hash.replace('#', '') } x ${ (Math.floor(Math.random() * 9) + 1) }`
         } else {
           question = `${ (Math.floor(Math.random() * 9) + 1) } x ${ (Math.floor(Math.random() * 9) + 1) }`
