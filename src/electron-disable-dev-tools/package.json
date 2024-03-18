@@ -1,0 +1,14 @@
+{
+  "name": "electron-disable-dev-tools",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-packager . 'electron-disable-dev-tools' --platform=darwin --arch=x64"
+  },
+  "dependencies": {
+    "electron": "^29.1.4"
+  },
+  "devDependencies": {
+    "electron-packager": "^17.1.2"
+  }
+}
