@@ -1,0 +1,19 @@
+<html>
+  <body>
+    <script>
+      let count = 0;
+      let lastDelta = performance.now();
+
+      tick();
+
+      function tick() {
+        const delta = performance.now();
+        const fps = 1000 / (delta - lastDelta);
+
+        lastDelta = delta;
+        document.title = `FPS: ${fps.toFixed(2)}(${count++})`;
+        requestAnimationFrame(tick);
+      }
+    </script>
+  </body>
+</html>
